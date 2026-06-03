@@ -870,13 +870,5 @@ setTimeout(() => {
 }, 2000);
 
 
-
-  function quickFilterFreela(term) {
-  document.getElementById('searchCat').value = term;
-  document.querySelectorAll('.filter-tag').forEach(t => {
-    t.classList.toggle('active', t.textContent.trim() === term);
-  });
-  applyFilters();
-}
 </script>
 </body></html>
