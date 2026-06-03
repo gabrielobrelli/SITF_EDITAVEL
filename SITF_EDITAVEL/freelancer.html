@@ -49,48 +49,81 @@
 
 <div class="dash-layout" style="padding-top:var(--nav-h)">
   <!-- SIDEBAR -->
-  <aside class="dash-sidebar">
-    <div id="sideProfile" style="padding:1.25rem;border-bottom:1px solid var(--border2);margin-bottom:0.75rem">
-      <div id="spAvatar" style="margin-bottom:0.6rem"></div>
-      <div id="spName" style="font-weight:700;font-size:0.9rem"></div>
-      <div style="font-size:0.75rem;color:var(--purple-light)">Freelancer</div>
-      <div id="spRating" style="font-size:0.78rem;color:var(--amber);margin-top:0.25rem"></div>
+<aside class="freelas-sidebar">
+  <div class="filters-body">
+    <h3 style="font-size:0.85rem;font-weight:700;margin-bottom:1.25rem">Filtros</h3>
+
+    <div class="filter-block">
+      <div class="filter-block-title">Área de atuação</div>
+      <input class="form-control" id="searchCat"
+        placeholder="Ex: Garçom, Designer, Dev..."
+        oninput="applyFilters()"
+        list="catSugestoesFreelas"
+        style="font-size:0.82rem;padding:0.45rem 0.7rem">
+      <datalist id="catSugestoesFreelas">
+        <option>Garçom</option>
+        <option>Manobrista</option>
+        <option>Limpeza</option>
+        <option>Segurança</option>
+        <option>Motorista</option>
+        <option>Cozinheiro</option>
+        <option>Entregador</option>
+        <option>Recepcionista</option>
+        <option>Design</option>
+        <option>Desenvolvimento</option>
+        <option>Marketing</option>
+        <option>Fotografia</option>
+        <option>Redação</option>
+        <option>Consultoria</option>
+      </datalist>
     </div>
-<div class="dash-nav-section">Principal</div>
-<button class="dash-nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
-  <span class="icon"><img src="assets/img/dashboard.png" style="width:18px;height:18px;vertical-align:middle"></span> Dashboard
-</button>
-<button class="dash-nav-item" id="nav-perfil" onclick="showPage('perfil')">
-  <span class="icon"><img src="assets/img/perfil.png" style="width:18px;height:18px;vertical-align:middle"></span> Meu Perfil
-</button>
-<button class="dash-nav-item" id="nav-vagas" onclick="showPage('vagas')">
-  <span class="icon"><img src="assets/img/vagas.png" style="width:18px;height:18px;vertical-align:middle"></span> Buscar Vagas
-</button>
-<button class="dash-nav-item" id="nav-candidaturas" onclick="showPage('candidaturas')">
-  <span class="icon"><img src="assets/img/candidaturas.png" style="width:18px;height:18px;vertical-align:middle"></span> Minhas Candidaturas
-</button>
-<div class="dash-nav-section">Comunicação</div>
-<button class="dash-nav-item" id="nav-chat" onclick="showPage('chat')">
-  <span class="icon"><img src="assets/img/chat.png" style="width:18px;height:18px;vertical-align:middle"></span>
-  Chat <span id="chatBadge" style="display:none;background:var(--purple);color:#fff;font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:99px;margin-left:4px">0</span>
-</button>
-<div class="dash-nav-section">Avaliações</div>
-<button class="dash-nav-item" id="nav-avaliar" onclick="showPage('avaliar')">
-  <span class="icon"><img src="assets/img/avaliar.png" style="width:18px;height:18px;vertical-align:middle"></span> Avaliar Empregadores
-</button>
-<button class="dash-nav-item" id="nav-minhas-avals" onclick="showPage('minhas-avals')">
-  <span class="icon"><img src="assets/img/historico-servico.png" style="width:18px;height:18px;vertical-align:middle"></span> Avaliações Recebidas
-</button>
-<div class="dash-nav-section">Histórico</div>
-<button class="dash-nav-item" id="nav-historico" onclick="showPage('historico')">
-  <span class="icon"><img src="assets/img/historico.png" style="width:18px;height:18px;vertical-align:middle"></span> Histórico
-</button>
-<div style="padding:1rem;margin-top:auto">
-  <button class="btn btn-danger btn-full btn-sm" onclick="logout()">
-    <img src="assets/img/sair.png" style="width:14px;height:14px;vertical-align:middle;margin-right:4px"> Sair da conta
-  </button>
-</div>
-  </aside>
+
+    <div class="filter-block">
+      <div class="filter-block-title">Estado</div>
+      <select class="form-control" id="filterEstado" onchange="applyFilters()"
+        style="font-size:0.82rem;padding:0.45rem 0.7rem">
+        <option value="">Todos os estados</option>
+        <option>SP</option><option>RJ</option><option>MG</option>
+        <option>RS</option><option>PR</option><option>SC</option>
+        <option>BA</option><option>CE</option><option>GO</option>
+        <option>DF</option><option>PE</option><option>AM</option>
+      </select>
+    </div>
+
+    <div class="filter-block">
+      <div class="filter-block-title">Valor máximo (R$/h)</div>
+      <input class="form-control" type="number" id="filterMax"
+        placeholder="Qualquer valor" min="0"
+        oninput="applyFilters()"
+        style="font-size:0.82rem;padding:0.45rem 0.7rem">
+    </div>
+
+    <div class="filter-block">
+      <div class="filter-block-title">Disponibilidade</div>
+      <label class="filter-check">
+        <input type="checkbox" id="filterOnline" onchange="applyFilters()">
+        Online agora
+      </label>
+    </div>
+
+    <div class="filter-block">
+      <div class="filter-block-title">Avaliação mínima</div>
+      <select class="form-control" id="filterRating" onchange="applyFilters()"
+        style="font-size:0.82rem;padding:0.45rem 0.7rem">
+        <option value="">Qualquer avaliação</option>
+        <option value="3">3+ estrelas</option>
+        <option value="4">4+ estrelas</option>
+        <option value="4.5">4.5+ estrelas</option>
+        <option value="5">5 estrelas</option>
+      </select>
+    </div>
+
+    <button class="btn btn-ghost btn-full btn-sm"
+      onclick="clearFilters()" style="margin-top:0.5rem">
+      Limpar filtros
+    </button>
+  </div>
+</aside>
 
   <!-- CONTENT -->
   <div id="pageContent" style="flex:1;padding:2rem;min-width:0;overflow-x:hidden"></div>
@@ -835,5 +868,15 @@ setTimeout(() => {
     setInterval(updateChatBadge, 30000);
   }
 }, 2000);
+
+
+
+  function quickFilterFreela(term) {
+  document.getElementById('searchCat').value = term;
+  document.querySelectorAll('.filter-tag').forEach(t => {
+    t.classList.toggle('active', t.textContent.trim() === term);
+  });
+  applyFilters();
+}
 </script>
 </body></html>
