@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Freelancers – SITF</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon_guia.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.freelas-page { padding-top: var(--nav-h); }
+.freelas-hero { background:var(--dark); padding:2.5rem 2rem; border-bottom:1px solid var(--border2); }
+.freelas-layout { display:flex; gap:2rem; max-width:1140px; margin:0 auto; padding:2rem; align-items:flex-start; }
+.freelas-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.15rem; }
+.fc { padding:1.5rem; text-align:center; position:relative; }
+.fc-avatar-wrap { position:relative; display:inline-block; margin-bottom:0.85rem; }
+.fc-online { position:absolute; bottom:3px; right:3px; width:13px; height:13px; background:var(--green); border-radius:50%; border:2px solid var(--card); }
+.fc-name { font-size:1rem; font-weight:700; margin-bottom:0.2rem; }
+.fc-role { font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem; }
+.fc-city { font-size:0.75rem; color:var(--text-dim); margin-bottom:0.6rem; }
+.fc-rate { font-size:1rem; font-weight:700; color:var(--purple-light); margin-bottom:0.5rem; }
+.fc-stars { font-size:0.82rem; margin-bottom:0.75rem; }
+.fc-skills { display:flex; gap:0.3rem; justify-content:center; flex-wrap:wrap; margin-bottom:1rem; }
+.freelas-sidebar { width:240px; flex-shrink:0; position:sticky; top:calc(var(--nav-h) + 1rem); }
+.filters-body { background:var(--card); border:1px solid var(--border2); border-radius:var(--radius); padding:1.25rem; }
+@media(max-width:900px){ .freelas-layout{ flex-direction:column; padding:1.25rem; } .freelas-sidebar{ width:100%; position:static; } }
+</style>
+</head>
+<body>
+<div class="scroll-progress"><div class="scroll-bar" id="scrollBar"></div></div>
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.jpeg" alt="SITF" style="width:32px;height:32px;border-radius:9px">
+    <span class="sitf-text">SI<span>TF</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Início</a>
+    <a href="vagas.html" id="nl-vagas">Vagas</a>
+    <a href="freelancers.html" id="nl-freelas">Freelancers</a>
+    <a href="como-funciona.html" id="nl-como">Como Funciona</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions">
+    <div class="role-switcher">
+      <button class="role-btn" onclick="window.location.href='empregador.html'">Empregador</button>
+      <button class="role-btn" onclick="window.location.href='freelancer.html'">Freelancer</button>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="openModal('login')">Entrar</button>
+    <button class="btn btn-primary btn-sm" onclick="openModal('register')">Cadastrar</button>
+  </div>
+  <button class="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="index.html" onclick="toggleDrawer()">🏠 Início</a>
+  <a href="vagas.html" onclick="toggleDrawer()">🔍 Vagas</a>
+  <a href="freelancers.html" onclick="toggleDrawer()">👥 Freelancers</a>
+  <a href="como-funciona.html" onclick="toggleDrawer()">📋 Como Funciona</a>
+  <div class="sep"></div>
+  <a href="empregador.html" onclick="toggleDrawer()">🏢 Área do Empregador</a>
+  <a href="freelancer.html" onclick="toggleDrawer()">💼 Área do Freelancer</a>
+  <div class="sep"></div>
+  <button class="btn btn-ghost btn-full" style="margin-top:0.5rem" onclick="openModal('login');toggleDrawer()">Entrar</button>
+  <button class="btn btn-primary btn-full" onclick="openModal('register');toggleDrawer()">Cadastrar-se</button>
+</div>
+<div class="freelas-page">
+  <div class="freelas-hero">
+    <div class="container">
+      <h1 style="font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;margin-bottom:0.4rem">👥 Freelancers</h1>
+      <p style="color:var(--text-muted);font-size:0.9rem">Encontre o profissional ideal para o seu projeto</p>
+      <div style="margin-top:1.25rem">
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Buscar por nome, habilidade ou área...">
+          <div class="divider-v"></div>
+          <select id="searchCat" style="background:transparent;border:none;min-width:130px;padding:0.5rem 1rem;color:var(--text-muted);font-family:inherit;font-size:0.85rem;outline:none">
+            <option value="">Todas as áreas</option>
+            <option>Design</option><option>Desenvolvimento</option><option>Marketing</option>
+            <option>Redação</option><option>Fotografia</option><option>Vídeo</option><option>Consultoria</option>
+          </select>
+          <button class="btn btn-primary" onclick="applyFilters()">Buscar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="freelas-layout">
+    <aside class="freelas-sidebar">
+      <div class="filters-body">
+        <h3 style="font-size:0.85rem;font-weight:700;margin-bottom:1.25rem">🎛️ Filtros</h3>
+        <div class="filter-block">
+          <div class="filter-block-title">Estado</div>
+          <select class="form-control" id="filterEstado" onchange="applyFilters()" style="font-size:0.82rem;padding:0.45rem 0.7rem">
+            <option value="">Todos os estados</option>
+            <option>SP</option><option>RJ</option><option>MG</option><option>RS</option>
+            <option>PR</option><option>SC</option><option>BA</option><option>CE</option>
+          </select>
+        </div>
+        <div class="filter-block">
+          <div class="filter-block-title">Valor máximo (R$/h)</div>
+          <input class="form-control" type="number" id="filterMax" placeholder="Qualquer valor" min="0" oninput="applyFilters()" style="font-size:0.82rem;padding:0.45rem 0.7rem">
+        </div>
+        <div class="filter-block">
+          <div class="filter-block-title">Disponibilidade</div>
+          <label class="filter-check"><input type="checkbox" id="filterOnline" onchange="applyFilters()"> Online agora</label>
+        </div>
+        <div class="filter-block">
+          <div class="filter-block-title">Avaliação mínima</div>
+          <select class="form-control" id="filterRating" onchange="applyFilters()" style="font-size:0.82rem;padding:0.45rem 0.7rem">
+            <option value="">Qualquer avaliação</option>
+            <option value="4">4+ estrelas</option>
+            <option value="4.5">4.5+ estrelas</option>
+            <option value="5">5 estrelas</option>
+          </select>
+        </div>
+        <button class="btn btn-ghost btn-full btn-sm" onclick="clearFilters()" style="margin-top:0.5rem">Limpar filtros</button>
+      </div>
+    </aside>
+
+    <main style="flex:1;min-width:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
+        <span style="font-size:0.88rem;color:var(--text-muted)" id="freelaCount">0 profissionais</span>
+        <select style="background:var(--dark3);border:1px solid var(--border2);border-radius:var(--radius-xs);padding:0.4rem 0.75rem;color:var(--text);font-size:0.85rem;outline:none" id="sortSelect" onchange="applyFilters()">
+          <option value="rating">Melhor avaliados</option>
+          <option value="rate_asc">Menor valor</option>
+          <option value="rate_desc">Maior valor</option>
+          <option value="projetos">Mais projetos</option>
+        </select>
+      </div>
+      <div class="freelas-grid" id="freelasGrid"></div>
+    </main>
+  </div>
+</div>
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="nav-logo" style="margin-bottom:0.75rem">
+          <img src="assets/img/logo.jpeg" alt="SITF" style="width:32px;height:32px;border-radius:9px">
+          <span class="sitf-text" style="font-size:1.1rem">SI<span>TF</span></span>
+        </div>
+        <p class="footer-brand-desc">Sistema Integrado de Trabalho Freelancer. Conectando talentos e oportunidades em todo o Brasil.</p>
+        <p class="footer-tagline">Conecte. Trabalhe. Conquiste.</p>
+      </div>
+      <div class="footer-col"><h4>Para Freelancers</h4><ul>
+        <li><a href="freelancer.html">Área do Freelancer</a></li>
+        <li><a href="vagas.html">Buscar vagas</a></li>
+        <li><a href="freelancers.html">Perfis públicos</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Para Empregadores</h4><ul>
+        <li><a href="empregador.html">Área do Empregador</a></li>
+        <li><a href="freelancers.html">Encontrar talentos</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>SITF</h4><ul>
+        <li><a href="como-funciona.html">Como funciona</a></li>
+        <li><a href="#">Termos de uso</a></li>
+        <li><a href="#">Suporte</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 SITF – Sistema Integrado de Trabalho Freelancer</span>
+      <span>Isabela Carnaval · Gabriel Obrelli · Beatriz Matias · 3º Informática</span>
+    </div>
+  </div>
+</footer>
+<div id="modalsContainer"></div>
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMsg"></span></div>
+<!-- MODAL PERFIL FREELANCER -->
+<div class="modal-backdrop" id="modalPerfil">
+  <div class="modal-box modal-box-wide">
+    <div class="modal-header">
+      <div id="mpHeader"></div>
+      <button class="modal-close" onclick="document.getElementById('modalPerfil').classList.remove('open')">✕</button>
+    </div>
+    <div id="mpBody"></div>
+  </div>
+</div>
+<script src="shared.js"></script>
+<script>
+document.getElementById('modalsContainer').innerHTML = buildAuthModal();
+document.getElementById('nl-freelas') && (document.getElementById('nl-freelas').className = 'active');
+
+let filteredFreelas = [];
+
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cat = document.getElementById('searchCat').value.toLowerCase();
+  const estado = document.getElementById('filterEstado').value;
+  const maxRate = parseFloat(document.getElementById('filterMax').value) || Infinity;
+  const online = document.getElementById('filterOnline').checked;
+  const minRating = parseFloat(document.getElementById('filterRating').value) || 0;
+  const sort = document.getElementById('sortSelect').value;
+
+  const users = SITF.getUsers();
+  let freelas = users.filter(u => u.tipo === 'freelancer');
+
+  if (q) freelas = freelas.filter(f => f.nome.toLowerCase().includes(q) || (f.skills||[]).some(s => s.toLowerCase().includes(q)) || (f.bio||'').toLowerCase().includes(q));
+  if (cat) freelas = freelas.filter(f => (f.skills||[]).some(s => s.toLowerCase().includes(cat)) || cat === '');
+  if (estado) freelas = freelas.filter(f => f.estado === estado);
+  if (maxRate !== Infinity) freelas = freelas.filter(f => f.rate <= maxRate);
+  if (online) freelas = freelas.filter(f => f.online);
+  if (minRating) freelas = freelas.filter(f => (f.rating||0) >= minRating);
+
+  if (sort === 'rating') freelas.sort((a,b) => (b.rating||0)-(a.rating||0));
+  else if (sort === 'rate_asc') freelas.sort((a,b) => a.rate-b.rate);
+  else if (sort === 'rate_desc') freelas.sort((a,b) => b.rate-a.rate);
+  else if (sort === 'projetos') freelas.sort((a,b) => (b.projetos||0)-(a.projetos||0));
+
+  filteredFreelas = freelas;
+  renderFreelas();
+}
+
+function clearFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchCat').value = '';
+  document.getElementById('filterEstado').value = '';
+  document.getElementById('filterMax').value = '';
+  document.getElementById('filterOnline').checked = false;
+  document.getElementById('filterRating').value = '';
+  applyFilters();
+}
+
+function renderFreelas() {
+  const grid = document.getElementById('freelasGrid');
+  document.getElementById('freelaCount').textContent = filteredFreelas.length + ' profissional' + (filteredFreelas.length !== 1 ? 'is' : '');
+  if (!filteredFreelas.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">😕</div><h3>Nenhum profissional encontrado</h3><p>Tente ajustar os filtros.</p></div>`;
+    return;
+  }
+  grid.innerHTML = filteredFreelas.map(f => {
+    const avals = SITF.getAvaliacoes().filter(a => a.avaliadoId === f.id && a.tipo === 'empregador_avalia_freelancer');
+    const rating = avals.length ? (avals.reduce((s,a)=>s+a.nota,0)/avals.length).toFixed(1) : (f.rating||0);
+    const reviews = avals.length || f.reviews || 0;
+    return `
+    <div class="card card-hover fc" onclick="openPerfil('${f.id}')">
+      <div class="fc-avatar-wrap">
+        ${avatarHTML(f.nome,'lg')}
+        ${f.online ? '<div class="fc-online"></div>' : ''}
+      </div>
+      <div class="fc-name">${f.nome}</div>
+      <div class="fc-role">${f.bio ? f.bio.substring(0,50)+'...' : 'Freelancer'}</div>
+      <div class="fc-city">📍 ${f.cidade||'Brasil'}${f.estado?', '+f.estado:''}</div>
+      <div class="fc-rate">R$ ${f.rate||'–'}/${f.rateType||'hora'}</div>
+      <div class="fc-stars">${starsHTML(parseFloat(rating))} <span style="color:var(--text-muted);font-size:0.75rem">${rating} (${reviews})</span></div>
+      <div class="fc-skills">${(f.skills||[]).slice(0,3).map(s=>`<span class="chip">${s}</span>`).join('')}</div>
+      <button class="btn btn-primary btn-full btn-sm" onclick="event.stopPropagation();chatWith('${f.id}','${f.nome}')">💬 Enviar mensagem</button>
+    </div>`; }).join('');
+}
+
+function openPerfil(id) {
+  const users = SITF.getUsers();
+  const f = users.find(u => u.id === id);
+  if (!f) return;
+  const avals = SITF.getAvaliacoes().filter(a => a.avaliadoId === id && a.tipo === 'empregador_avalia_freelancer');
+  const rating = avals.length ? (avals.reduce((s,a)=>s+a.nota,0)/avals.length).toFixed(1) : (f.rating||0);
+  document.getElementById('mpHeader').innerHTML = `
+    <div style="display:flex;align-items:center;gap:1rem">
+      <div class="online-indicator">${avatarHTML(f.nome,'lg')}${f.online?'<div class="online-dot lg"></div>':''}</div>
+      <div>
+        <h3 class="modal-title">${f.nome}</h3>
+        <p class="modal-subtitle">${f.cidade||''}${f.estado?', '+f.estado:''} ${f.online?'· <span style="color:var(--green)">Online</span>':''}</p>
+      </div>
+    </div>`;
+  document.getElementById('mpBody').innerHTML = `
+    <div style="text-align:right;margin-bottom:1rem">
+      <a href="perfil.html?id=${f.id}" class="btn btn-ghost btn-sm" target="_blank">🔗 Ver perfil público</a>
+    </div>
+    <div style="margin-bottom:1rem">
+      <div style="font-size:0.95rem;font-weight:700;color:var(--purple-light)">R$ ${f.rate||'–'}/${f.rateType||'hora'}</div>
+      <div style="font-size:0.88rem;color:var(--amber);margin:0.4rem 0">${starsHTML(parseFloat(rating))} ${rating} (${avals.length||f.reviews||0} avaliações) · ${f.projetos||0} projetos</div>
+    </div>
+    <p style="font-size:0.875rem;color:var(--text-muted);line-height:1.7;margin-bottom:1.25rem">${f.bio||'Freelancer disponível no SITF.'}</p>
+    <div style="margin-bottom:1.25rem">
+      <div style="font-size:0.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:0.5rem">Habilidades</div>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap">${(f.skills||[]).map(s=>`<span class="chip">${s}</span>`).join('')}</div>
+    </div>
+    ${f.portfolio?`<div style="margin-bottom:1.25rem;font-size:0.85rem;color:var(--text-muted)">🔗 Portfólio: <a href="https://${f.portfolio}" target="_blank" style="color:var(--purple-light)">${f.portfolio}</a></div>`:''}
+    ${avals.length?`<div style="margin-bottom:1.25rem"><div style="font-size:0.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:0.75rem">Avaliações recentes</div>${avals.slice(0,3).map(a=>`<div style="background:var(--dark3);border-radius:var(--radius-sm);padding:0.85rem;margin-bottom:0.6rem"><div style="color:var(--amber);font-size:0.8rem;margin-bottom:0.35rem">${starsHTML(a.nota)}</div><p style="font-size:0.82rem;color:var(--text-muted);font-style:italic">"${a.comentario}"</p></div>`).join('')}</div>`:''}
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+      <button class="btn btn-primary btn-lg" onclick="chatWith('${f.id}','${f.nome}');document.getElementById('modalPerfil').classList.remove('open')">💬 Enviar mensagem</button>
+      <button class="btn btn-ghost btn-lg" onclick="document.getElementById('modalPerfil').classList.remove('open')">Fechar</button>
+    </div>`;
+  document.getElementById('modalPerfil').classList.add('open');
+}
+
+function chatWith(id, nome) {
+  const user = SITF.getUser();
+  if (!user) { openModal('login'); showToast('Faça login para enviar mensagem.', 'warn'); return; }
+  showToast(`Abrindo chat com ${nome}...`, 'info');
+  setTimeout(() => { window.location.href = `${user.tipo === 'empregador' ? 'empregador' : 'freelancer'}.html#chat`; }, 800);
+}
+
+applyFilters();
+</script>
+</body></html>

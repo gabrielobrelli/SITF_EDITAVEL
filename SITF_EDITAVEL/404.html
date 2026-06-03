@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Página não encontrada – SITF</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon_guia.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.page-404 {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem; text-align: center; position: relative; overflow: hidden;
+}
+.num-404 {
+  font-family: "Syne", sans-serif;
+  font-size: clamp(8rem, 20vw, 14rem);
+  font-weight: 800; line-height: 1;
+  background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(37,99,235,0.25));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 0;
+  user-select: none;
+}
+.error-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-xl); padding: 3rem 2.5rem;
+  max-width: 520px; width: 100%; position: relative; z-index: 1;
+  box-shadow: var(--shadow), 0 0 60px rgba(124,58,237,0.08);
+}
+.error-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+.error-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.75rem; }
+.error-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.65; }
+.quick-links {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 1.5rem;
+}
+.quick-link {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--dark3); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 0.65rem 0.9rem;
+  font-size: 0.85rem; color: var(--text-muted);
+  transition: all 0.2s; text-decoration: none;
+}
+.quick-link:hover { color: var(--text); border-color: rgba(255,255,255,0.15); background: var(--dark4); }
+.countdown { font-size: 0.82rem; color: var(--text-dim); margin-top: 1.5rem; }
+.countdown strong { color: var(--purple-light); }
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.jpeg" alt="SITF Logo">
+    <span class="sitf-text">SI<span>TF</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Início</a>
+    <a href="vagas.html">Vagas</a>
+    <a href="freelancers.html">Freelancers</a>
+    <a href="como-funciona.html">Como Funciona</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions">
+    <a href="index.html" class="btn btn-primary btn-sm">← Voltar ao início</a>
+  </div>
+  <button class="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="index.html" onclick="toggleDrawer()">🏠 Início</a>
+  <a href="vagas.html" onclick="toggleDrawer()">🔍 Vagas</a>
+  <a href="freelancers.html" onclick="toggleDrawer()">👥 Freelancers</a>
+  <div class="sep"></div>
+  <a href="empregador.html" onclick="toggleDrawer()">🏢 Área do Empregador</a>
+  <a href="freelancer.html" onclick="toggleDrawer()">💼 Área do Freelancer</a>
+</div>
+
+<div class="page-404">
+  <div class="hero-bg-fx">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-grid-lines"></div>
+  </div>
+
+  <div class="error-card">
+    <div class="num-404">404</div>
+    <span class="error-icon">🔍</span>
+    <h1 class="error-title">Página não encontrada</h1>
+    <p class="error-desc">
+      A página que você está procurando não existe, foi movida ou o endereço está incorreto.
+      Mas não se preocupe — tem muito mais esperando por você no SITF!
+    </p>
+    <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
+      <a href="index.html" class="btn btn-primary btn-lg">🏠 Ir para o início</a>
+      <button class="btn btn-ghost btn-lg" onclick="history.back()">← Voltar</button>
+    </div>
+    <div class="quick-links">
+      <a href="vagas.html" class="quick-link">🔍 <span>Ver vagas</span></a>
+      <a href="freelancers.html" class="quick-link">👥 <span>Freelancers</span></a>
+      <a href="empregador.html" class="quick-link">🏢 <span>Sou empregador</span></a>
+      <a href="freelancer.html" class="quick-link">💼 <span>Sou freelancer</span></a>
+    </div>
+    <p class="countdown">Redirecionando para o início em <strong id="countNum">10</strong>s…</p>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+let count = 10;
+const el = document.getElementById('countNum');
+const timer = setInterval(() => {
+  count--;
+  if (el) el.textContent = count;
+  if (count <= 0) { clearInterval(timer); window.location.href = 'index.html'; }
+}, 1000);
+// Cancel redirect on any interaction
+document.addEventListener('click', () => clearInterval(timer), { once: true });
+</script>
+</body>
+</html>

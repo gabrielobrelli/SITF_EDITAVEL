@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Área do Empregador – SITF</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon_guia.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.dash-sidebar { background:var(--dark2); width:240px; }
+#pageContent { flex:1; padding:2rem; min-width:0; overflow-x:hidden; }
+.stat-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:1rem; margin-bottom:2rem; }
+.modal-box-wide { max-width:640px; }
+.vaga-manage-card { padding:1.25rem; display:flex; gap:1rem; align-items:flex-start; margin-bottom:0.85rem; }
+.cand-card { padding:1rem; display:flex; gap:0.85rem; align-items:center; margin-bottom:0.6rem; }
+.cand-actions { display:flex; gap:0.5rem; margin-left:auto; }
+.chat-wrap { background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; height:480px; }
+.rating-form { background:var(--card); border:1px solid var(--border2); border-radius:var(--radius); padding:1.5rem; margin-bottom:1rem; }
+@media(max-width:768px){ .dash-layout{ flex-direction:column; } .dash-sidebar{ width:100%; height:auto; } #pageContent{ padding:1.25rem; } }
+</style>
+</head>
+<body>
+<div class="scroll-progress"><div class="scroll-bar" id="scrollBar"></div></div>
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.jpeg" alt="SITF Logo">
+    <span class="sitf-text">SI<span>TF</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Início</a>
+    <a href="vagas.html">Vagas</a>
+    <a href="freelancers.html">Freelancers</a>
+    <a href="como-funciona.html">Como Funciona</a>
+    <a href="empregador.html" class="active">Meu Painel</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions" id="navUserArea">
+    <button class="btn btn-ghost btn-sm" onclick="openModal('login')">Entrar</button>
+    <button class="btn btn-primary btn-sm" onclick="openModal('register')">Cadastrar</button>
+  </div>
+  <button class="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="index.html">🏠 Início</a>
+  <a href="vagas.html">🔍 Vagas</a>
+  <a href="freelancers.html">👥 Freelancers</a>
+  <a href="empregador.html">🏢 Meu Painel</a>
+  <div class="sep"></div>
+  <button class="btn btn-ghost btn-full" onclick="openModal('login');toggleDrawer()">Entrar</button>
+</div>
+
+<div class="dash-layout" style="padding-top:var(--nav-h)">
+  <!-- SIDEBAR -->
+  <aside class="dash-sidebar">
+    <div id="sideProfile" style="padding:1.25rem;border-bottom:1px solid var(--border2);margin-bottom:0.75rem">
+      <div id="spAvatar" style="margin-bottom:0.6rem"></div>
+      <div id="spName" style="font-weight:700;font-size:0.9rem"></div>
+      <div id="spRole" style="font-size:0.75rem;color:var(--purple-light)">Empregador</div>
+    </div>
+<div class="dash-nav-section">Principal</div>
+<button class="dash-nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
+  <span class="icon"><img src="assets/img/dashboard.png" style="width:18px;height:18px;vertical-align:middle"></span> Dashboard
+</button>
+<button class="dash-nav-item" id="nav-perfil" onclick="showPage('perfil')">
+  <span class="icon"><img src="assets/img/perfil.png" style="width:18px;height:18px;vertical-align:middle"></span> Meu Perfil
+</button>
+<button class="dash-nav-item" id="nav-vagas" onclick="showPage('vagas')">
+  <span class="icon"><img src="assets/img/vagas.png" style="width:18px;height:18px;vertical-align:middle"></span> Minhas Vagas
+</button>
+<button class="dash-nav-item" id="nav-candidatos" onclick="showPage('candidatos')">
+  <span class="icon"><img src="assets/img/candidaturas.png" style="width:18px;height:18px;vertical-align:middle"></span> Candidatos
+</button>
+<div class="dash-nav-section">Comunicação</div>
+<button class="dash-nav-item" id="nav-chat" onclick="showPage('chat')">
+  <span class="icon"><img src="assets/img/chat.png" style="width:18px;height:18px;vertical-align:middle"></span>
+  Chat <span id="chatBadge" style="display:none;background:var(--purple);color:#fff;font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:99px;margin-left:4px">0</span>
+</button>
+<div class="dash-nav-section">Avaliações</div>
+<button class="dash-nav-item" id="nav-avaliar" onclick="showPage('avaliar')">
+  <span class="icon"><img src="assets/img/avaliar.png" style="width:18px;height:18px;vertical-align:middle"></span> Avaliar Freelancers
+</button>
+<button class="dash-nav-item" id="nav-minhas-avals" onclick="showPage('minhas-avals')">
+  <span class="icon"><img src="assets/img/historico-servico.png" style="width:18px;height:18px;vertical-align:middle"></span> Avaliações Recebidas
+</button>
+<div class="dash-nav-section">Histórico</div>
+<button class="dash-nav-item" id="nav-historico" onclick="showPage('historico')">
+  <span class="icon"><img src="assets/img/historico.png" style="width:18px;height:18px;vertical-align:middle"></span> Histórico
+</button>
+<div style="padding:1rem;margin-top:auto">
+  <button class="btn btn-danger btn-full btn-sm" onclick="logout()">
+    <img src="assets/img/sair.png" style="width:14px;height:14px;vertical-align:middle;margin-right:4px"> Sair da conta
+  </button>
+</div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div id="pageContent"></div>
+</div>
+
+<div id="modalsContainer"></div>
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMsg"></span></div>
+
+<!-- MODAL PUBLICAR VAGA -->
+<div class="modal-backdrop" id="modalNovaVaga">
+  <div class="modal-box modal-box-wide">
+    <div class="modal-header">
+      <div><h3 class="modal-title">📋 Publicar Nova Vaga</h3><p class="modal-subtitle">Preencha os detalhes da oportunidade</p></div>
+      <button class="modal-close" onclick="document.getElementById('modalNovaVaga').classList.remove('open')">✕</button>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group" style="grid-column:1/-1"><label class="form-label">Título da vaga *</label><input class="form-control" id="nvTitulo" placeholder="Ex: Designer UI/UX Sênior"></div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group"><label class="form-label">Categoria *</label>
+        <input class="form-control" id="nvCat"
+  placeholder="Ex: Garçom, Manobrista, Designer, Dev, Cozinheiro..."
+  list="catSugestoes">
+<datalist id="catSugestoes">
+  <option>Garçom</option>
+  <option>Manobrista</option>
+  <option>Limpeza</option>
+  <option>Segurança</option>
+  <option>Motorista</option>
+  <option>Cozinheiro</option>
+  <option>Entregador</option>
+  <option>Recepcionista</option>
+  <option>Design</option>
+  <option>Desenvolvimento</option>
+  <option>Marketing</option>
+  <option>Fotografia</option>
+  <option>Redação</option>
+  <option>Consultoria</option>
+  <option>Vídeo</option>
+</datalist>
+      </div>
+      <div class="form-group"><label class="form-label">Modalidade</label>
+        <select class="form-control" id="nvModalidade"><option>Remoto</option><option>Presencial</option><option>Híbrido</option></select>
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group"><label class="form-label">Cidade</label><input class="form-control" id="nvCidade" placeholder="São Paulo"></div>
+      <div class="form-group"><label class="form-label">Estado</label>
+        <select class="form-control" id="nvEstado">
+          <option value="">Nacional</option>
+          <option>SP</option><option>RJ</option><option>MG</option><option>RS</option><option>PR</option><option>SC</option><option>BA</option><option>CE</option><option>GO</option><option>DF</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group"><label class="form-label">Valor (R$) *</label><input class="form-control" id="nvPreco" type="number" placeholder="120"></div>
+      <div class="form-group"><label class="form-label">Tipo de cobrança</label>
+        <select class="form-control" id="nvTipo"><option value="hora">Por hora</option><option value="projeto">Por projeto</option><option value="dia">Por dia</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Descrição completa *</label><textarea class="form-control" id="nvDesc" rows="4" placeholder="Descreva as responsabilidades, requisitos e o que o freelancer fará..."></textarea></div>
+    <div class="form-group"><label class="form-label">Habilidades requeridas (separadas por vírgula)</label><input class="form-control" id="nvTags" placeholder="React, Figma, UX, Photoshop"></div>
+    <div class="form-group"><label class="filter-check" style="font-size:0.85rem"><input type="checkbox" id="nvDestaque" style="accent-color:var(--purple)"> Marcar como vaga em destaque</label></div>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+      <button class="btn btn-primary btn-lg" onclick="publicarVaga()">Publicar vaga ✅</button>
+      <button class="btn btn-ghost btn-lg" onclick="document.getElementById('modalNovaVaga').classList.remove('open')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AVALIAR FREELANCER -->
+<div class="modal-backdrop" id="modalAvaliar">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div><h3 class="modal-title">⭐ Avaliar Freelancer</h3><p class="modal-subtitle" id="avalTarget">-</p></div>
+      <button class="modal-close" onclick="document.getElementById('modalAvaliar').classList.remove('open')">✕</button>
+    </div>
+    <input type="hidden" id="avalFreelancerId">
+    <input type="hidden" id="avalVagaId">
+    <div class="form-group">
+      <label class="form-label">Nota geral</label>
+      <div class="star-input" id="starInput">
+        <span onclick="setStars(1)">★</span><span onclick="setStars(2)">★</span>
+        <span onclick="setStars(3)">★</span><span onclick="setStars(4)">★</span><span onclick="setStars(5)">★</span>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Comentário</label><textarea class="form-control" id="avalComentario" rows="4" placeholder="Descreva a experiência com este freelancer: qualidade, prazo, comunicação..."></textarea></div>
+    <button class="btn btn-primary btn-full btn-lg" onclick="enviarAvaliacao()">Enviar avaliação ⭐</button>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+document.getElementById('modalsContainer').innerHTML = buildAuthModal();
+
+let currentUser = null;
+let selectedStars = 0;
+let activeChatUser = null;
+
+function setStars(n) {
+  selectedStars = n;
+  document.querySelectorAll('#starInput span').forEach((s, i) => s.classList.toggle('active', i < n));
+}
+function updateNavUser() {
+  const na = document.getElementById('navUserArea');
+  if (!na || !currentUser) return;
+  na.innerHTML = `
+    <span style="font-size:0.82rem;color:var(--text-muted)">${currentUser.nome}</span>
+    <button class="btn btn-danger btn-sm" onclick="logout()">Sair</button>`;
+}
+
+async function updateChatBadge() {
+  try {
+    const badge = document.getElementById('chatBadge');
+    if (!badge || !currentUser) return;
+
+    // Busca todas as mensagens não lidas
+    let unread = 0;
+
+    if (currentUser.tipo === 'empregador') {
+      const vagas  = await SITF.getVagas();
+      const minhas = vagas.filter(v => v.empregador_id === currentUser.id);
+      for (const v of minhas) {
+        const cands = await SITF.getCandidaturas({ vaga_id: v.id });
+        if (!Array.isArray(cands)) continue;
+        for (const c of cands) {
+          const chatKey = [currentUser.id, c.freelancer_id].sort().join('_');
+          const msgs    = await SITF.getMsgs(chatKey);
+          if (Array.isArray(msgs)) {
+            unread += msgs.filter(m => m.sender_id !== currentUser.id && !m.lido).length;
+          }
+        }
+      }
+    } else {
+      const cands = await SITF.getCandidaturas({ freelancer_id: currentUser.id });
+      const vagas = await SITF.getVagas();
+      if (Array.isArray(cands)) {
+        for (const c of cands) {
+          const v = vagas.find(x => x.id === c.vaga_id);
+          if (!v) continue;
+          const chatKey = [currentUser.id, v.empregador_id].sort().join('_');
+          const msgs    = await SITF.getMsgs(chatKey);
+          if (Array.isArray(msgs)) {
+            unread += msgs.filter(m => m.sender_id !== currentUser.id && !m.lido).length;
+          }
+        }
+      }
+    }
+
+    if (unread > 0) {
+      badge.textContent = unread > 9 ? '9+' : unread;
+      badge.style.display = 'inline';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch(e) {
+    console.log('chatBadge error:', e);
+  }
+}
+
+async function checkAuth() {
+  currentUser = SITF.getUser();
+  if (!currentUser || currentUser.tipo !== 'empregador') {
+    document.getElementById('pageContent').innerHTML = `
+      <div class="empty-state" style="padding:5rem 2rem">
+        <div class="empty-state-icon">🔒</div>
+        <h3>Área restrita a empregadores</h3>
+        <p style="margin:0.75rem 0 1.5rem">Faça login ou crie uma conta como empregador.</p>
+        <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary btn-lg" onclick="openModal('login')">Entrar</button>
+          <button class="btn btn-outline btn-lg" onclick="openModal('register')">Criar conta</button>
+        </div>
+      </div>`;
+    return false;
+  }
+  document.getElementById('spAvatar').innerHTML = avatarHTML(currentUser.nome, 'md');
+  document.getElementById('spName').innerHTML = currentUser.nome;
+  updateNavUser();
+  return true;
+}
+
+function logout() {
+  SITF.clearUser();
+  window.location.href = 'index.html';
+}
+
+function showPage(page) {
+  document.querySelectorAll('.dash-nav-item').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('nav-' + page);
+  if (btn) btn.classList.add('active');
+  const pages = {
+    dashboard:      pageDashboard,
+    perfil:         pagePerfil,
+    vagas:          pageVagas,
+    candidatos:     pageCandidatos,
+    chat:           pageChat,
+    avaliar:        pageAvaliar,
+    'minhas-avals': pageMinhasAvals,
+    historico:      pageHistorico,
+};
+  if (pages[page]) pages[page]();
+}
+
+/* ── DASHBOARD ──────────────────────────────────── */
+async function pageDashboard() {
+  if (!await checkAuth()) return;
+
+  const [minhasVagas, avals] = await Promise.all([
+    SITF.getVagas(),
+    SITF.getAvaliacoes({ avaliado_id: currentUser.id, tipo: 'freelancer_avalia_empregador' })
+  ]);
+
+  const vagas = minhasVagas.filter(v => v.empregador_id === currentUser.id);
+
+  // Busca candidaturas de todas as vagas
+  let totalCands = 0;
+  for (const v of vagas) {
+    const c = await SITF.getCandidaturas({ vaga_id: v.id });
+    totalCands += Array.isArray(c) ? c.length : 0;
+  }
+
+  const avg = avals.length
+    ? (avals.reduce((s,a) => s + parseInt(a.nota), 0) / avals.length).toFixed(1)
+    : '–';
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.75rem">
+      <h2 style="font-size:1.5rem;font-weight:800">Olá, ${currentUser.nome}! 👋</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">Bem-vindo ao seu painel de empregador.</p>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-value">${vagas.length}</div><div class="stat-label">Vagas publicadas</div></div>
+      <div class="stat-card"><div class="stat-value">${vagas.filter(v=>v.status==='aberta').length}</div><div class="stat-label">Vagas abertas</div></div>
+      <div class="stat-card"><div class="stat-value">${totalCands}</div><div class="stat-label">Candidaturas recebidas</div></div>
+      <div class="stat-card"><div class="stat-value">${avg} ⭐</div><div class="stat-label">Sua avaliação média</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+      <div class="card" style="padding:1.5rem">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem">Vagas recentes</h3>
+        ${vagas.length ? vagas.slice(0,3).map(v => `
+          <div style="padding:0.85rem;background:var(--dark3);border-radius:var(--radius-sm);margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:0.875rem;font-weight:600">${v.titulo}</div>
+              <div style="font-size:0.72rem;color:var(--text-muted)">${v.candidatos ? v.candidatos.length : 0} candidatos</div>
+            </div>
+            <span class="badge ${v.status==='aberta'?'badge-open':'badge-closed'}">${v.status}</span>
+          </div>`).join('') :
+          '<p style="font-size:0.85rem;color:var(--text-muted)">Nenhuma vaga publicada ainda.</p>'}
+        <button class="btn btn-primary btn-full btn-sm" style="margin-top:0.75rem"
+          onclick="document.getElementById('modalNovaVaga').classList.add('open')">+ Publicar nova vaga</button>
+      </div>
+      <div class="card" style="padding:1.5rem">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem">Ações rápidas</h3>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <button class="btn btn-primary btn-full"
+            onclick="document.getElementById('modalNovaVaga').classList.add('open')">📋 Publicar vaga</button>
+          <button class="btn btn-secondary btn-full" onclick="showPage('candidatos')">👥 Ver candidatos</button>
+          <button class="btn btn-secondary btn-full" onclick="showPage('chat')">💬 Abrir chat</button>
+          <button class="btn btn-secondary btn-full" onclick="showPage('avaliar')">⭐ Avaliar freelancers</button>
+          <a href="freelancers.html" class="btn btn-outline btn-full">🔍 Buscar talentos</a>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ── PERFIL ─────────────────────────────────────── */
+async function pagePerfil() {
+  if (!await checkAuth()) return;
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.75rem">
+      <h2 style="font-size:1.5rem;font-weight:800">🏢 Meu Perfil</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">Configure as informações da sua empresa</p>
+    </div>
+    <div class="card" style="padding:2rem;max-width:640px">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem">
+        <div style="position:relative">
+          <div id="fotoPreview" style="width:88px;height:88px;border-radius:50%;background:${avatarColor(currentUser.nome)};display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:#fff;overflow:hidden;border:3px solid rgba(124,58,237,0.4)">
+            ${currentUser.foto
+              ? `<img src="${currentUser.foto}" style="width:100%;height:100%;object-fit:cover">`
+              : initials(currentUser.nome)}
+          </div>
+          <label for="fotoInput" style="position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.7rem">📷</label>
+          <input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="previewFoto(this)">
+        </div>
+        <div>
+          <div style="font-size:1.2rem;font-weight:800">${currentUser.nome}</div>
+          <div style="font-size:0.82rem;color:var(--purple-light)">Conta Empregador</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem">${currentUser.email}</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nome da empresa / projeto *</label>
+        <input class="form-control" id="pNome" value="${currentUser.nome}"
+          placeholder="Ex: Restaurante Sabor & Arte, Eventos Silva...">
+      </div>
+
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Cidade</label>
+          <input class="form-control" id="pCidade" value="${currentUser.cidade||''}"
+            placeholder="Ex: Campinas"></div>
+        <div class="form-group"><label class="form-label">Estado</label>
+          <select class="form-control" id="pEstado">
+            <option value="">Selecione</option>
+            <option>SP</option><option>RJ</option><option>MG</option><option>RS</option>
+            <option>PR</option><option>SC</option><option>BA</option><option>CE</option>
+            <option>GO</option><option>DF</option><option>PE</option><option>AM</option>
+            <option>PA</option><option>MA</option><option>MS</option><option>MT</option>
+          </select></div>
+      </div>
+
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Telefone / WhatsApp</label>
+          <input class="form-control" id="pTelefone" value="${currentUser.telefone||''}"
+            placeholder="(11) 99999-9999"></div>
+        <div class="form-group"><label class="form-label">E-mail de contato</label>
+          <input class="form-control" type="email" id="pEmailContato" value="${currentUser.email_contato||''}"
+            placeholder="contato@empresa.com.br"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Site / Instagram / LinkedIn</label>
+        <input class="form-control" id="pSite" value="${currentUser.site||''}"
+          placeholder="Ex: instagram.com/suaempresa ou empresa.com.br">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Sobre a empresa / projeto</label>
+        <textarea class="form-control" id="pBio" rows="4"
+          placeholder="Ex: Restaurante especializado em eventos corporativos e sociais. Buscamos profissionais como garçons, bartenders, cozinheiros e manobristas...">${currentUser.bio||''}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">E-mail de cadastro</label>
+        <input class="form-control" type="email" value="${currentUser.email}" disabled>
+      </div>
+
+      <button class="btn btn-primary btn-lg" onclick="salvarPerfil()">Salvar alterações ✅</button>
+    </div>`;
+
+  const sel = document.getElementById('pEstado');
+  if (sel && currentUser.estado) sel.value = currentUser.estado;
+}
+
+async function salvarPerfil() {
+  const nomeVal = document.getElementById('pNome')?.value.trim();
+  if (!nomeVal) { showToast('Nome é obrigatório.', 'warn'); return; }
+
+  const dados = {
+    id:            currentUser.id,
+    nome:          nomeVal,
+    cidade:        document.getElementById('pCidade')?.value.trim()       || '',
+    estado:        document.getElementById('pEstado')?.value              || '',
+    site:          document.getElementById('pSite')?.value.trim()         || '',
+    bio:           document.getElementById('pBio')?.value.trim()          || '',
+    telefone:      document.getElementById('pTelefone')?.value.trim()     || '',
+    email_contato: document.getElementById('pEmailContato')?.value.trim() || '',
+    foto:          currentUser.foto || null,
+    skills:        [],
+    rate:          currentUser.rate      || 0,
+    rateType:      currentUser.rate_type || 'hora',
+    portfolio:     currentUser.portfolio || '',
+    online:        1,
+  };
+
+  try {
+    const res = await SITF.updateUsuario(dados);
+    if (res && res.sucesso) {
+      const updated = { ...currentUser, ...dados };
+      SITF.setUser(updated);
+      currentUser = updated;
+      document.getElementById('spName').textContent = updated.nome;
+      showToast('Perfil atualizado com sucesso! ✅', 'success');
+    } else {
+      showToast(res?.erro || 'Erro ao salvar perfil.', 'error');
+    }
+  } catch(e) {
+    showToast('Erro de conexão ao salvar.', 'error');
+    console.error(e);
+  }
+}
+
+function previewFoto(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+
+  // Preview local imediato
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('fotoPreview');
+    if (prev) prev.innerHTML = `<img src="${e.target.result}"
+      style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  };
+  reader.readAsDataURL(file);
+
+  // Upload para o servidor
+  uploadFotoServidor(file);
+}
+
+async function uploadFotoServidor(file) {
+  try {
+    showToast('Enviando foto...', 'info');
+    const res = await SITF.uploadFoto(file, currentUser.id);
+    if (res.sucesso) {
+      const updated = { ...currentUser, foto: res.foto };
+      SITF.setUser(updated);
+      currentUser = updated;
+      showToast('Foto atualizada com sucesso! ✅', 'success');
+    } else {
+      showToast(res.erro || 'Erro ao enviar foto.', 'error');
+    }
+  } catch(e) {
+    showToast('Erro de conexão ao enviar foto.', 'error');
+    console.error(e);
+  }
+}
+/* ── MINHAS VAGAS ───────────────────────────────── */
+async function pageVagas() {
+  if (!await checkAuth()) return;
+
+  const todasVagas = await SITF.getVagas();
+  const vagas = todasVagas.filter(v => v.empregador_id === currentUser.id);
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h2 style="font-size:1.5rem;font-weight:800">📋 Minhas Vagas</h2>
+        <p style="color:var(--text-muted);font-size:0.9rem">${vagas.length} vaga${vagas.length!==1?'s':''} publicada${vagas.length!==1?'s':''}</p>
+      </div>
+      <button class="btn btn-primary" onclick="document.getElementById('modalNovaVaga').classList.add('open')">+ Nova vaga</button>
+    </div>
+    ${vagas.length ? vagas.map(v => `
+      <div class="card" style="padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem">
+        <div style="width:44px;height:44px;border-radius:8px;background:${avatarColor(v.empresa)};display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">${initials(v.empresa)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:0.95rem;font-weight:700;margin-bottom:0.2rem">${v.titulo}</div>
+          <div style="font-size:0.78rem;color:var(--text-muted)">📍 ${v.cidade||''}${v.estado?', '+v.estado:''} · ${v.categoria} · R$ ${v.preco}/${v.tipo_preco}</div>
+          <div style="font-size:0.75rem;color:var(--text-dim);margin-top:0.2rem">Publicada ${timeAgo(v.criado_em)}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;align-items:flex-end">
+          <span class="badge ${v.status==='aberta'?'badge-open':'badge-closed'}">${v.status}</span>
+          <button class="btn btn-secondary btn-sm" onclick="showPage('candidatos')">Ver candidatos</button>
+          <button class="btn btn-danger btn-sm" onclick="encerrarVaga('${v.id}')">Encerrar</button>
+        </div>
+      </div>`).join('') : `
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <h3>Nenhuma vaga publicada</h3>
+        <p>Publique sua primeira vaga e encontre o freelancer ideal!</p>
+        <button class="btn btn-primary" style="margin-top:1rem"
+          onclick="document.getElementById('modalNovaVaga').classList.add('open')">+ Publicar vaga</button>
+      </div>`}`;
+}
+
+async function encerrarVaga(id) {
+  const res = await SITF.updateVaga({ id, status: 'encerrada' });
+  if (res.sucesso) { showToast('Vaga encerrada.', 'info'); pageVagas(); }
+  else showToast('Erro ao encerrar vaga.', 'error');
+}
+
+/* ── CANDIDATOS ─────────────────────────────────── */
+async function pageCandidatos() {
+  if (!await checkAuth()) return;
+
+  const [todasVagas, todosUsers] = await Promise.all([
+    SITF.getVagas(),
+    SITF.getUsers()
+  ]);
+
+  const minhasVagas = todasVagas.filter(v => v.empregador_id === currentUser.id);
+  let todasCands = [];
+  for (const v of minhasVagas) {
+    const c = await SITF.getCandidaturas({ vaga_id: v.id });
+    if (Array.isArray(c)) todasCands = todasCands.concat(c.map(x => ({ ...x, _vaga: v })));
+  }
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.75rem">
+      <h2 style="font-size:1.5rem;font-weight:800">👥 Candidatos</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">${todasCands.length} candidatura${todasCands.length!==1?'s':''} recebida${todasCands.length!==1?'s':''}</p>
+    </div>
+    ${todasCands.length ? todasCands.map(c => {
+      const f = todosUsers.find(u => u.id === c.freelancer_id);
+      const v = c._vaga;
+      if (!f) return '';
+      const badgeMap = { pendente:'badge-new', aprovado:'badge-remote', reprovado:'badge-urgent' };
+      return `<div class="card" id="cand-${c.id}" style="padding:1rem;display:flex;gap:0.85rem;align-items:center;margin-bottom:0.6rem">
+        ${avatarHTML(f.nome,'md')}
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:0.9rem">${f.nome}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted)">${f.bio?f.bio.substring(0,50)+'...':''}</div>
+          <div style="font-size:0.72rem;color:var(--text-dim)">Vaga: ${v.titulo} · ${timeAgo(c.criado_em)}</div>
+        </div>
+        <span class="badge ${badgeMap[c.status]||'badge-new'}">${c.status}</span>
+        <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+          <button class="btn btn-success btn-sm" onclick="atualizarCand('${c.id}','aprovado')">✓ Aprovar</button>
+          <button class="btn btn-danger btn-sm" onclick="atualizarCand('${c.id}','reprovado')">✕</button>
+          <button class="btn btn-ghost btn-sm" onclick="chatWithFreela('${f.id}')">💬</button>
+          <button class="btn btn-ghost btn-sm" onclick="window.open('perfil.html?id=${f.id}','_blank')">👤</button>
+          <button class="btn btn-outline btn-sm" onclick="abrirAvaliar('${f.id}','${f.nome}','${v.id}')">⭐</button>
+        </div>
+      </div>`;
+    }).join('') : `
+      <div class="empty-state">
+        <div class="empty-state-icon">👥</div>
+        <h3>Nenhuma candidatura ainda</h3>
+        <p>Publique vagas para receber candidatos.</p>
+      </div>`}`;
+}
+
+async function atualizarCand(id, status) {
+  const res = await SITF.updateCandidatura({ id, status, visto: 1 });
+  if (res.sucesso) {
+    showToast(status === 'aprovado' ? 'Candidato aprovado! ✅' : 'Candidato reprovado.', 'info');
+    const card = document.getElementById('cand-' + id);
+    if (card) {
+      card.style.transition = 'opacity 0.3s';
+      card.style.opacity = '0';
+      setTimeout(() => card.remove(), 300);
+    } else {
+      pageCandidatos();
+    }
+  } else {
+    showToast('Erro ao atualizar candidatura.', 'error');
+  }
+}
+
+/* ── CHAT ───────────────────────────────────────── */
+async function pageChat() {
+  if (!await checkAuth()) return;
+
+  const [todasVagas, todosUsers] = await Promise.all([
+    SITF.getVagas(),
+    SITF.getUsers()
+  ]);
+
+  const minhasVagas = todasVagas.filter(v => v.empregador_id === currentUser.id);
+  let freelancerIds = [];
+  for (const v of minhasVagas) {
+    const c = await SITF.getCandidaturas({ vaga_id: v.id });
+    if (Array.isArray(c)) freelancerIds = freelancerIds.concat(c.map(x => x.freelancer_id));
+  }
+  freelancerIds = [...new Set(freelancerIds)];
+  const chatUsers = todosUsers.filter(u => freelancerIds.includes(u.id));
+  if (!activeChatUser && chatUsers.length) activeChatUser = chatUsers[0];
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.25rem"><h2 style="font-size:1.5rem;font-weight:800">💬 Chat</h2></div>
+    <div class="chat-wrap">
+      <div class="chat-layout">
+        <div class="chat-sidebar">
+          <div class="chat-sidebar-header">
+            Conversas
+            <span style="font-size:0.72rem;background:var(--purple);color:#fff;padding:0.1rem 0.5rem;border-radius:99px">${chatUsers.length}</span>
+          </div>
+          <div class="chat-contacts">
+            ${chatUsers.length ? chatUsers.map(u => `
+              <div class="contact-item ${activeChatUser&&activeChatUser.id===u.id?'active':''}" onclick="selectChatUser('${u.id}')">
+                ${avatarHTML(u.nome,'sm')}
+                <div class="contact-info">
+                  <div class="contact-name">${u.nome}</div>
+                  <div class="contact-preview">${u.bio?u.bio.substring(0,30)+'...':'Freelancer'}</div>
+                </div>
+                ${u.online ? '<div style="width:8px;height:8px;background:var(--green);border-radius:50%;flex-shrink:0"></div>' : ''}
+              </div>`).join('') :
+              '<div style="padding:1.5rem;text-align:center;font-size:0.82rem;color:var(--text-muted)">Nenhum candidato ainda.</div>'}
+          </div>
+        </div>
+        <div class="chat-main" id="chatMain">
+          <div class="empty-state" style="margin:auto">
+            <div class="empty-state-icon">💬</div>
+            <h3>Carregando...</h3>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  if (activeChatUser) await renderChatMain(activeChatUser);
+}
+
+async function renderChatMain(peer) {
+  const chatKey = [currentUser.id, peer.id].sort().join('_');
+  const msgs    = await SITF.getMsgs(chatKey);
+
+  document.getElementById('chatMain').innerHTML = `
+    <div class="chat-header">
+      ${avatarHTML(peer.nome,'sm')}
+      <div class="chat-header-info">
+        <div class="chat-peer-name">${peer.nome}</div>
+        <div class="chat-peer-status">${peer.online ? '● Online agora' : 'Offline'}</div>
+      </div>
+      <div style="display:flex;gap:0.5rem">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('📎 Enviar arquivo','info')">📎</button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMsgs">
+      ${msgs.length ? msgs.map(m => `
+        <div class="message ${m.sender_id===currentUser.id?'outgoing':''}">
+          ${m.sender_id!==currentUser.id ? avatarHTML(peer.nome,'sm') : ''}
+          <div><div class="msg-bubble">${m.texto}</div><div class="msg-time">${timeAgo(m.criado_em)}</div></div>
+          ${m.sender_id===currentUser.id ? avatarHTML(currentUser.nome,'sm') : ''}
+        </div>`).join('') :
+        `<div style="text-align:center;padding:2rem;font-size:0.82rem;color:var(--text-muted)">Início da conversa com ${peer.nome}</div>`}
+    </div>
+    <div class="chat-composer">
+      <input class="composer-input" id="msgInputField" placeholder="Digite sua mensagem..."
+        onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="send-btn" onclick="sendMsg()">➤</button>
+    </div>`;
+
+  const el = document.getElementById('chatMsgs');
+  if (el) el.scrollTop = el.scrollHeight;
+}
+
+async function selectChatUser(id) {
+  const users = await SITF.getUsers();
+  activeChatUser = users.find(u => u.id === id);
+  await pageChat();
+}
+
+async function chatWithFreela(id) {
+  const users = await SITF.getUsers();
+  activeChatUser = users.find(u => u.id === id);
+  showPage('chat');
+}
+
+async function sendMsg() {
+  const input = document.getElementById('msgInputField');
+  if (!input || !input.value.trim() || !activeChatUser) return;
+  const texto = input.value.trim();
+  input.value = '';
+  await SITF.sendMsg({
+    chat_key:  [currentUser.id, activeChatUser.id].sort().join('_'),
+    sender_id: currentUser.id,
+    texto
+  });
+  await renderChatMain(activeChatUser);
+}
+
+/* ── AVALIAR FREELANCERS ────────────────────────── */
+async function pageAvaliar() {
+  if (!await checkAuth()) return;
+
+  const [todasVagas, todosUsers, avals] = await Promise.all([
+    SITF.getVagas(),
+    SITF.getUsers(),
+    SITF.getAvaliacoes()
+  ]);
+
+  const minhasVagas = todasVagas.filter(v => v.empregador_id === currentUser.id);
+  let aprovados = [];
+  for (const v of minhasVagas) {
+    const c = await SITF.getCandidaturas({ vaga_id: v.id });
+    if (Array.isArray(c)) {
+      aprovados = aprovados.concat(c.filter(x => x.status === 'aprovado').map(x => ({ ...x, _vaga: v })));
+    }
+  }
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.75rem">
+      <h2 style="font-size:1.5rem;font-weight:800">⭐ Avaliar Freelancers</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">Avalie os freelancers com quem você trabalhou</p>
+    </div>
+    ${aprovados.length ? aprovados.map(c => {
+      const f = todosUsers.find(u => u.id === c.freelancer_id);
+      const v = c._vaga;
+      if (!f) return '';
+      const jaAvaliou = avals.find(a =>
+        a.avaliador_id === currentUser.id &&
+        a.avaliado_id  === f.id &&
+        a.vaga_id      === v.id &&
+        a.tipo         === 'empregador_avalia_freelancer'
+      );
+      return `<div class="rating-form">
+        <div style="display:flex;align-items:center;gap:0.85rem;margin-bottom:0.85rem">
+          ${avatarHTML(f.nome,'md')}
+          <div>
+            <div style="font-weight:600">${f.nome}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">Vaga: ${v.titulo}</div>
+          </div>
+          ${jaAvaliou
+            ? '<span class="badge badge-remote" style="margin-left:auto">Avaliado ✓</span>'
+            : `<button class="btn btn-primary btn-sm" style="margin-left:auto"
+                onclick="abrirAvaliar('${f.id}','${f.nome}','${v.id}')">⭐ Avaliar</button>`}
+        </div>
+        ${jaAvaliou ? `<div style="font-size:0.82rem;color:var(--text-muted);font-style:italic">"${jaAvaliou.comentario}" · ${starsHTML(parseInt(jaAvaliou.nota))}</div>` : ''}
+      </div>`;
+    }).join('') : `
+      <div class="empty-state">
+        <div class="empty-state-icon">⭐</div>
+        <h3>Nenhum freelancer para avaliar</h3>
+        <p>Aprove candidatos para depois avaliá-los.</p>
+      </div>`}`;
+}
+
+function abrirAvaliar(fId, fNome, vagaId) {
+  document.getElementById('avalFreelancerId').value = fId;
+  document.getElementById('avalVagaId').value       = vagaId;
+  document.getElementById('avalTarget').textContent  = fNome;
+  selectedStars = 0;
+  document.querySelectorAll('#starInput span').forEach(s => s.classList.remove('active'));
+  document.getElementById('avalComentario').value = '';
+  document.getElementById('modalAvaliar').classList.add('open');
+}
+
+async function enviarAvaliacao() {
+  if (!selectedStars) { showToast('Selecione uma nota.', 'warn'); return; }
+  const comentario = document.getElementById('avalComentario').value.trim();
+  if (!comentario)  { showToast('Escreva um comentário.', 'warn'); return; }
+  const res = await SITF.createAvaliacao({
+    vaga_id:      document.getElementById('avalVagaId').value,
+    avaliador_id: currentUser.id,
+    avaliado_id:  document.getElementById('avalFreelancerId').value,
+    tipo:         'empregador_avalia_freelancer',
+    nota:         selectedStars,
+    comentario
+  });
+  if (res.erro) { showToast(res.erro, 'error'); return; }
+  document.getElementById('modalAvaliar').classList.remove('open');
+  showToast('Avaliação enviada com sucesso! ⭐', 'success');
+  pageAvaliar();
+}
+
+/* ── AVALIAÇÕES RECEBIDAS ───────────────────────── */
+async function pageMinhasAvals() {
+  if (!await checkAuth()) return;
+
+  const [avals, todosUsers] = await Promise.all([
+    SITF.getAvaliacoes({ avaliado_id: currentUser.id, tipo: 'freelancer_avalia_empregador' }),
+    SITF.getUsers()
+  ]);
+
+  const avg = avals.length
+    ? (avals.reduce((s,a) => s + parseInt(a.nota), 0) / avals.length).toFixed(1)
+    : '–';
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.75rem">
+      <h2 style="font-size:1.5rem;font-weight:800">📝 Avaliações Recebidas</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">
+        Média: <strong style="color:var(--amber)">${avg} ⭐</strong> ·
+        ${avals.length} avaliação${avals.length!==1?'ões':''}
+      </p>
+    </div>
+    ${avals.length ? avals.map(a => {
+      const f = todosUsers.find(u => u.id === a.avaliador_id);
+      return `<div class="card" style="padding:1.25rem;margin-bottom:0.85rem">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem">
+          ${f ? avatarHTML(f.nome,'sm') : ''}
+          <div>
+            <div style="font-weight:600;font-size:0.875rem">${f ? f.nome : 'Freelancer'}</div>
+            <div style="font-size:0.72rem;color:var(--text-dim)">${timeAgo(a.criado_em)}</div>
+          </div>
+          <div style="margin-left:auto;color:var(--amber)">${starsHTML(parseInt(a.nota))}</div>
+        </div>
+        <p style="font-size:0.875rem;color:var(--text-muted);font-style:italic">"${a.comentario}"</p>
+      </div>`;
+    }).join('') : `
+      <div class="empty-state">
+        <div class="empty-state-icon">📝</div>
+        <h3>Nenhuma avaliação recebida ainda</h3>
+        <p>Os freelancers poderão avaliar sua empresa após os serviços.</p>
+      </div>`}`;
+}
+
+/* ── PUBLICAR VAGA ──────────────────────────────── */
+async function publicarVaga() {
+  const titulo = document.getElementById('nvTitulo').value.trim();
+  const preco  = parseFloat(document.getElementById('nvPreco').value);
+  const desc   = document.getElementById('nvDesc').value.trim();
+  if (!titulo || !preco || !desc) { showToast('Preencha os campos obrigatórios (*).', 'error'); return; }
+
+  const tags = document.getElementById('nvTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const res = await SITF.createVaga({
+    titulo,
+    empresa:      currentUser.nome,
+    empregador_id: currentUser.id,
+    cat:          document.getElementById('nvCat').value,
+    preco,
+    tipo:         document.getElementById('nvTipo').value,
+    modalidade:   document.getElementById('nvModalidade').value,
+    cidade:       document.getElementById('nvCidade').value || 'Nacional',
+    estado:       document.getElementById('nvEstado').value,
+    desc,
+    tags,
+    destaque:     document.getElementById('nvDestaque').checked ? 1 : 0,
+  });
+
+  if (res.erro) { showToast(res.erro, 'error'); return; }
+  document.getElementById('modalNovaVaga').classList.remove('open');
+  showToast('Vaga publicada com sucesso! 🎉', 'success');
+  showPage('vagas');
+}
+
+/* ── PageHistorico ───────────────────────────────────────── */
+
+async function pageHistorico() {
+  if (!await checkAuth()) return;
+
+  const historico = await SITF.getHistorico({ empregador_id: currentUser.id });
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h2 style="font-size:1.5rem;font-weight:800">📁 Histórico de Serviços</h2>
+        <p style="color:var(--text-muted);font-size:0.9rem">${historico.length} serviço${historico.length!==1?'s':''} registrado${historico.length!==1?'s':''}</p>
+      </div>
+      <button class="btn btn-primary" onclick="abrirNovoServico()">+ Registrar serviço</button>
+    </div>
+
+    ${historico.length ? historico.map(h => `
+      <div class="card" style="padding:1.25rem;margin-bottom:0.85rem">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem">
+          <div>
+            <div style="font-size:0.95rem;font-weight:700;margin-bottom:0.2rem">${h.titulo}</div>
+            <div style="font-size:0.78rem;color:var(--text-muted)">
+              👤 ${h.freelancer_nome||'Freelancer'}
+              ${h.data_inicio ? ` · 📅 ${h.data_inicio}` : ''}
+              ${h.data_fim    ? ` até ${h.data_fim}` : ''}
+            </div>
+            ${h.descricao ? `<p style="font-size:0.83rem;color:var(--text-muted);margin-top:0.5rem">${h.descricao}</p>` : ''}
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem">
+            ${h.valor ? `<div style="font-size:0.95rem;font-weight:700">R$ ${parseFloat(h.valor).toFixed(2)}</div>` : ''}
+            <span class="badge ${h.status==='concluido'?'badge-remote':h.status==='em_andamento'?'badge-new':'badge-urgent'}">${h.status.replace('_',' ')}</span>
+            <button class="btn btn-danger btn-sm" onclick="deletarServico('${h.id}')">Remover</button>
+          </div>
+        </div>
+      </div>`).join('') : `
+      <div class="empty-state">
+        <div class="empty-state-icon">📁</div>
+        <h3>Nenhum serviço registrado</h3>
+        <p>Registre os serviços contratados para construir seu histórico!</p>
+        <button class="btn btn-primary" style="margin-top:1rem" onclick="abrirNovoServico()">+ Registrar serviço</button>
+      </div>`}
+
+    <div class="modal-backdrop" id="modalNovoServico">
+      <div class="modal-box">
+        <div class="modal-header">
+          <div><h3 class="modal-title">📁 Registrar Serviço</h3></div>
+          <button class="modal-close" onclick="document.getElementById('modalNovoServico').classList.remove('open')">✕</button>
+        </div>
+        <div class="form-group"><label class="form-label">Título do serviço *</label>
+          <input class="form-control" id="hTitulo"
+            placeholder="Ex: Garçom para evento, Manobrista para restaurante..."></div>
+        <div class="form-group"><label class="form-label">Nome do freelancer</label>
+          <input class="form-control" id="hFreelancer"
+            placeholder="Ex: João Silva"></div>
+        <div class="form-row form-row-2">
+          <div class="form-group"><label class="form-label">Data início</label>
+            <input class="form-control" type="date" id="hDataInicio"></div>
+          <div class="form-group"><label class="form-label">Data fim</label>
+            <input class="form-control" type="date" id="hDataFim"></div>
+        </div>
+        <div class="form-row form-row-2">
+          <div class="form-group"><label class="form-label">Valor pago (R$)</label>
+            <input class="form-control" type="number" id="hValor" placeholder="0,00"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select class="form-control" id="hStatus">
+              <option value="concluido">Concluído</option>
+              <option value="em_andamento">Em andamento</option>
+              <option value="cancelado">Cancelado</option>
+            </select></div>
+        </div>
+        <div class="form-group"><label class="form-label">Descrição</label>
+          <textarea class="form-control" id="hDesc" rows="3"
+            placeholder="Descreva o serviço contratado..."></textarea></div>
+        <button class="btn btn-primary btn-full btn-lg" onclick="salvarServico()">Registrar serviço ✅</button>
+      </div>
+    </div>`;
+}
+
+function abrirNovoServico() {
+  document.getElementById('modalNovoServico')?.classList.add('open');
+}
+
+async function salvarServico() {
+  const titulo = document.getElementById('hTitulo')?.value.trim();
+  if (!titulo) { showToast('Título é obrigatório.', 'warn'); return; }
+
+  const res = await SITF.createHistorico({
+    freelancer_id: currentUser.id,
+    empregador_id: currentUser.id,
+    titulo,
+    descricao:   document.getElementById('hDesc')?.value.trim(),
+    valor:       parseFloat(document.getElementById('hValor')?.value) || 0,
+    data_inicio: document.getElementById('hDataInicio')?.value || null,
+    data_fim:    document.getElementById('hDataFim')?.value    || null,
+    status:      document.getElementById('hStatus')?.value     || 'concluido',
+  });
+
+  if (res.sucesso) {
+    document.getElementById('modalNovoServico')?.classList.remove('open');
+    showToast('Serviço registrado com sucesso! ✅', 'success');
+    pageHistorico();
+  } else {
+    showToast(res.erro || 'Erro ao registrar serviço.', 'error');
+  }
+}
+
+async function deletarServico(id) {
+  const res = await SITF.deleteHistorico(id);
+  if (res.sucesso) {
+    showToast('Serviço removido.', 'info');
+    pageHistorico();
+  } else {
+    showToast('Erro ao remover serviço.', 'error');
+  }
+}
+/* ── INIT ───────────────────────────────────────── */
+checkAuth();
+showPage('dashboard');
+if (window.location.hash === '#chat')  showPage('chat');
+if (window.location.hash === '#vagas') showPage('vagas');
+
+
+
+
+// Atualiza badge do chat a cada 30s
+setTimeout(() => {
+  if (currentUser) {
+    updateChatBadge();
+    setInterval(updateChatBadge, 30000);
+  }
+}, 2000);
+</script>
+</body></html>

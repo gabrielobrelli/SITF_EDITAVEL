@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SITF – Sistema Integrado de Trabalho Freelancer</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon_guia.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.hero { min-height:100vh; display:flex; align-items:center; padding:6rem 2rem 4rem; position:relative; overflow:hidden; }
+.hero-content { max-width:1140px; margin:0 auto; width:100%; display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; position:relative; z-index:1; }
+.hero-badge { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(124,58,237,0.15); border:1px solid rgba(124,58,237,0.35); color:var(--purple-light); font-size:0.8rem; font-weight:500; padding:0.35rem 0.9rem; border-radius:99px; margin-bottom:1.25rem; }
+.hero-badge .dot { width:7px; height:7px; background:var(--purple-light); border-radius:50%; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.hero h1 { font-size:clamp(2.2rem,4.5vw,3.6rem); font-weight:800; line-height:1.08; margin-bottom:1.25rem; }
+.hero p.lead { font-size:1.05rem; color:var(--text-muted); margin-bottom:2rem; max-width:480px; }
+.hero-cta { display:flex; gap:0.75rem; flex-wrap:wrap; }
+.hero-stats { display:flex; gap:2.5rem; margin-top:2.5rem; padding-top:2rem; border-top:1px solid var(--border2); }
+.hero-stat strong { display:block; font-size:1.5rem; font-weight:800; font-family:"Syne",sans-serif; }
+.hero-stat span { font-size:0.8rem; color:var(--text-muted); }
+.app-mockup { background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; width:100%; max-width:390px; box-shadow:var(--shadow),0 0 60px rgba(124,58,237,0.12); }
+.mock-bar { background:var(--dark2); padding:0.65rem 1rem; display:flex; align-items:center; gap:0.45rem; border-bottom:1px solid var(--border2); }
+.mock-dot { width:10px; height:10px; border-radius:50%; }
+.mock-body { padding:1rem; }
+.mock-job { background:var(--dark2); border-radius:var(--radius-sm); border:1px solid var(--border2); padding:1rem; margin-bottom:0.7rem; }
+.mock-job-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem; }
+.mock-tag { font-size:0.68rem; background:rgba(124,58,237,0.2); color:var(--purple-light); padding:0.18rem 0.55rem; border-radius:99px; }
+.mock-price { font-size:0.9rem; font-weight:700; }
+.mock-title { font-size:0.9rem; font-weight:600; margin-bottom:0.2rem; }
+.mock-sub { font-size:0.72rem; color:var(--text-muted); }
+.mock-foot { display:flex; align-items:center; justify-content:space-between; margin-top:0.75rem; }
+.mock-avs { display:flex; }
+.mock-av { width:22px; height:22px; border-radius:50%; border:2px solid var(--card); margin-right:-6px; font-size:0.58rem; display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; }
+.mock-apply { font-size:0.7rem; background:rgba(124,58,237,0.25); color:var(--purple-light); border:none; padding:0.28rem 0.65rem; border-radius:5px; font-weight:500; cursor:pointer; }
+.features-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1.25rem; }
+.feature-card { padding:1.75rem; }
+.feature-icon { font-size:2rem; margin-bottom:1rem; display:block; }
+.feature-card h3 { font-size:1rem; font-weight:700; margin-bottom:0.5rem; }
+.feature-card p { font-size:0.85rem; color:var(--text-muted); }
+.how-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; align-items:start; }
+.how-arrow { font-size:1.5rem; color:var(--text-dim); display:flex; align-items:center; justify-content:center; padding-top:2rem; }
+.step-num { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,var(--purple),var(--blue)); display:flex; align-items:center; justify-content:center; font-family:"Syne",sans-serif; font-weight:800; font-size:1.1rem; color:#fff; margin:0 auto 1rem; }
+.how-card { text-align:center; padding:1.75rem 1.25rem; }
+.how-card h3 { font-size:0.95rem; font-weight:700; margin-bottom:0.5rem; }
+.how-card p { font-size:0.82rem; color:var(--text-muted); }
+.cta-block { background:linear-gradient(135deg,rgba(124,58,237,0.18),rgba(37,99,235,0.18)); border:1px solid rgba(124,58,237,0.25); border-radius:var(--radius-xl); padding:4rem 2.5rem; text-align:center; }
+.cta-block h2 { font-size:clamp(1.6rem,3vw,2.4rem); font-weight:800; margin-bottom:1rem; }
+.cta-block p { color:var(--text-muted); margin-bottom:2rem; max-width:500px; margin-left:auto; margin-right:auto; }
+.cta-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+.category-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:0.85rem; }
+.cat-card { background:var(--dark3); border:1px solid var(--border2); border-radius:var(--radius); padding:1.25rem 1rem; text-align:center; cursor:pointer; transition:all 0.2s; text-decoration:none; color:var(--text); }
+.cat-card:hover { border-color:var(--purple); background:rgba(124,58,237,0.08); color:var(--purple-light); transform:translateY(-2px); }
+.cat-card .cat-icon { font-size:1.75rem; margin-bottom:0.5rem; display:block; }
+.cat-card span { font-size:0.82rem; font-weight:500; display:block; }
+.cat-card small { font-size:0.72rem; color:var(--text-dim); margin-top:0.2rem; display:block; }
+.reviews-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.25rem; }
+.review-card { padding:1.5rem; }
+.review-quote { font-size:0.875rem; color:var(--text-muted); line-height:1.65; font-style:italic; margin-bottom:1rem; }
+.review-author { display:flex; align-items:center; gap:0.75rem; }
+.review-name { font-size:0.875rem; font-weight:600; }
+.review-role { font-size:0.75rem; color:var(--text-dim); }
+@media(max-width:900px){ .hero-content{ grid-template-columns:1fr; gap:2.5rem; } .app-mockup{ max-width:320px; margin:0 auto; } .hero-visual{ order:-1; } .how-grid{ grid-template-columns:repeat(2,1fr); } .how-arrow{ display:none; } }
+@media(max-width:560px){ .how-grid{ grid-template-columns:1fr; } .hero-stats{ gap:1.5rem; } }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-bar" id="scrollBar"></div></div>
+
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.jpeg" alt="SITF Logo">
+        <span class="sitf-text">SI<span>TF</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="active">Início</a>
+    <a href="vagas.html">Vagas</a>
+    <a href="freelancers.html">Freelancers</a>
+    <a href="como-funciona.html">Como Funciona</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions">
+    <div class="role-switcher">
+      <button class="role-btn" onclick="window.location.href='empregador.html'">Empregador</button>
+      <button class="role-btn" onclick="window.location.href='freelancer.html'">Freelancer</button>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="openModal('login')">Entrar</button>
+    <button class="btn btn-primary btn-sm" onclick="openModal('register')">Cadastrar</button>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="index.html" onclick="toggleDrawer()">🏠 Início</a>
+  <a href="vagas.html" onclick="toggleDrawer()">🔍 Vagas</a>
+  <a href="freelancers.html" onclick="toggleDrawer()">👥 Freelancers</a>
+  <a href="como-funciona.html" onclick="toggleDrawer()">📋 Como Funciona</a>
+  <div class="sep"></div>
+  <a href="empregador.html" onclick="toggleDrawer()">🏢 Área do Empregador</a>
+  <a href="freelancer.html" onclick="toggleDrawer()">💼 Área do Freelancer</a>
+  <div class="sep"></div>
+  <button class="btn btn-ghost btn-full" style="margin-top:0.5rem" onclick="openModal('login');toggleDrawer()">Entrar</button>
+  <button class="btn btn-primary btn-full" onclick="openModal('register');toggleDrawer()">Cadastrar-se</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-fx">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-grid-lines"></div>
+  </div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-badge"><span class="dot"></span> Plataforma freelancer 100% brasileira</div>
+      <h1>Conecte.<br><span class="grad-text">Trabalhe.</span><br>Conquiste.</h1>
+      <p class="lead">O SITF une freelancers talentosos a empregadores que precisam de serviços de qualidade. Cadastro, avaliação, chat e gestão de vagas em um só lugar.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary btn-xl" onclick="openModal('register')">Começar agora →</button>
+        <a href="vagas.html" class="btn btn-ghost btn-xl">Explorar vagas</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>2.4k+</strong><span>Freelancers</span></div>
+        <div class="hero-stat"><strong>8.1k+</strong><span>Vagas publicadas</span></div>
+        <div class="hero-stat"><strong>4.9 ★</strong><span>Avaliação média</span></div>
+        <div class="hero-stat"><strong>R$ 2M+</strong><span>Pago em projetos</span></div>
+      </div>
+    </div>
+    <div class="hero-visual" style="display:flex;align-items:center;justify-content:center">
+      <div class="app-mockup">
+        <div class="mock-bar">
+          <div class="mock-dot" style="background:#ff5f57"></div>
+          <div class="mock-dot" style="background:#ffbd2e"></div>
+          <div class="mock-dot" style="background:#28ca41"></div>
+          <span style="font-size:0.7rem;color:var(--text-dim);margin-left:0.4rem">SITF — Vagas</span>
+        </div>
+        <div class="mock-body">
+          <p style="font-size:0.7rem;color:var(--text-dim);margin-bottom:0.65rem">✨ Vagas em destaque hoje</p>
+          <div class="mock-job">
+            <div class="mock-job-top">
+              <span class="mock-tag">Design</span>
+              <span class="mock-price">R$ 120<span style="font-size:0.65rem;color:var(--text-muted);font-weight:400">/h</span></span>
+            </div>
+            <div class="mock-title">Designer UI/UX Sênior</div>
+            <div class="mock-sub">🌐 Remoto · São Paulo, SP</div>
+            <div class="mock-foot">
+              <div class="mock-avs">
+                <div class="mock-av" style="background:#7c3aed">A</div>
+                <div class="mock-av" style="background:#2563eb">M</div>
+                <div class="mock-av" style="background:#059669">J</div>
+              </div>
+              <span style="font-size:0.72rem;color:var(--amber)">★★★★★</span>
+              <button class="mock-apply">Candidatar</button>
+            </div>
+          </div>
+          <div class="mock-job">
+            <div class="mock-job-top">
+              <span class="mock-tag" style="background:rgba(37,99,235,0.2);color:var(--blue-light)">Dev</span>
+              <span class="mock-price">R$ 95<span style="font-size:0.65rem;color:var(--text-muted);font-weight:400">/h</span></span>
+            </div>
+            <div class="mock-title">Dev React Native</div>
+            <div class="mock-sub">🌐 Remoto · Nacional</div>
+            <div class="mock-foot">
+              <div class="mock-avs">
+                <div class="mock-av" style="background:#dc2626">L</div>
+                <div class="mock-av" style="background:#7c3aed">P</div>
+              </div>
+              <span style="font-size:0.72rem;color:var(--amber)">★★★★☆</span>
+              <button class="mock-apply">Candidatar</button>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.5rem;font-size:0.72rem;color:var(--purple-light)">
+            <span>🔔</span> 3 novas vagas hoje
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIAS -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-head section-head-center">
+      <span class="section-label">Explore por área</span>
+      <h2 class="section-title">Categorias de Serviço</h2>
+    </div>
+    <div class="category-grid">
+  <a href="vagas.html?cat=Garçom" class="cat-card">
+    <img src="assets/img/icon_guia.png" class="cat-icon" style="width:40px;height:40px;margin:0 auto 0.5rem">
+    <span>Garçom / Eventos</span><small id="cc-garcom">0 vagas</small>
+  </a>
+  <a href="vagas.html?cat=Limpeza" class="cat-card">
+    <img src="assets/img/icon_guia.png" class="cat-icon" style="width:40px;height:40px;margin:0 auto 0.5rem">
+    <span>Limpeza</span><small id="cc-limpeza">0 vagas</small>
+  </a>
+  <a href="vagas.html?cat=Segurança" class="cat-card">
+    <img src="assets/img/icon_guia.png" class="cat-icon" style="width:40px;height:40px;margin:0 auto 0.5rem">
+    <span>Segurança</span><small id="cc-seguranca">0 vagas</small>
+  </a>
+  <a href="vagas.html?cat=Motorista" class="cat-card">
+    <img src="assets/img/icon_guia.png" class="cat-icon" style="width:40px;height:40px;margin:0 auto 0.5rem">
+    <span>Motorista</span><small id="cc-motorista">0 vagas</small>
+  </a>
+  <a href="vagas.html?cat=Design" class="cat-card">
+    <img src="assets/img/icon_guia.png" class="cat-icon" style="width:40px;height:40px;margin:0 auto 0.5rem">
+    <span>Design</span><small id="cc-design">0 vagas</small>
+  </a>
+  <a href="vagas.html?cat=Desenvolvimento" class="cat-card">
+    <img src="assets/img/icon_guia.png" class="cat-icon" style="width:40px;height:40px;margin:0 auto 0.5rem">
+    <span>Desenvolvimento</span><small id="cc-dev">0 vagas</small>
+  </a>
+  <a href="vagas.html?cat=Cozinheiro" class="cat-card">
+    <img src="assets/img/icon_guia.png" class="cat-icon" style="width:40px;height:40px;margin:0 auto 0.5rem">
+    <span>Cozinha</span><small id="cc-cozinha">0 vagas</small>
+  </a>
+  <a href="vagas.html" class="cat-card">
+    <img src="assets/img/icon_guia.png" class="cat-icon" style="width:40px;height:40px;margin:0 auto 0.5rem">
+    <span>Ver todas</span><small id="cc-all">0 vagas</small>
+  </a>
+</div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA PREVIEW -->
+<section class="section">
+  <div class="container">
+    <div class="section-head section-head-center">
+      <span class="section-label">Simples e rápido</span>
+      <h2 class="section-title">Como o SITF Funciona</h2>
+      <p class="section-subtitle" style="max-width:500px;margin:0 auto">Em 4 passos você está conectado, trabalhando ou contratando com total segurança.</p>
+    </div>
+    <div class="how-grid">
+      <div class="card how-card">
+        <div class="step-num">1</div>
+        <h3>Cadastre-se</h3>
+        <p>Crie sua conta como freelancer ou empregador em menos de 2 minutos, gratuitamente.</p>
+      </div>
+      <div class="card how-card">
+        <div class="step-num">2</div>
+        <h3>Monte seu perfil</h3>
+        <p>Adicione habilidades, portfólio, localização, disponibilidade e valor por hora ou projeto.</p>
+      </div>
+      <div class="card how-card">
+        <div class="step-num">3</div>
+        <h3>Conecte-se via chat</h3>
+        <p>Encontre vagas ou talentos. Converse pelo chat integrado e feche contratos com segurança.</p>
+      </div>
+      <div class="card how-card">
+        <div class="step-num">4</div>
+        <h3>Avalie e seja avaliado</h3>
+        <p>Após o serviço, tanto o freelancer quanto o empregador se avaliam, construindo reputação.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2rem">
+      <a href="como-funciona.html" class="btn btn-outline btn-lg">Saiba mais detalhes →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-head section-head-center">
+      <span class="section-label">Por que o SITF?</span>
+      <h2 class="section-title">Tudo que você precisa numa só plataforma</h2>
+    </div>
+    <div class="features-grid">
+      <div class="card feature-card"><span class="feature-icon">🔒</span><h3>Perfis verificados</h3><p>Todos os usuários passam por validação de e-mail e histórico de avaliações transparente.</p></div>
+      <div class="card feature-card"><span class="feature-icon">💬</span><h3>Chat em tempo real</h3><p>Converse diretamente com empregadores ou freelancers, sem precisar de plataformas externas.</p></div>
+      <div class="card feature-card"><span class="feature-icon">⭐</span><h3>Sistema de avaliação duplo</h3><p>Empregador avalia o freelancer e o freelancer avalia o empregador. Transparência total.</p></div>
+      <div class="card feature-card"><span class="feature-icon">📍</span><h3>Filtro por localização</h3><p>Encontre vagas ou profissionais na sua cidade, estado ou em todo o Brasil.</p></div>
+      <div class="card feature-card"><span class="feature-icon">📋</span><h3>Gestão de vagas</h3><p>Empregadores publicam vagas estruturadas como anúncios e gerenciam candidaturas no painel.</p></div>
+      <div class="card feature-card"><span class="feature-icon">📱</span><h3>100% responsivo</h3><p>Acesse pelo celular, tablet ou computador. A experiência é sempre fluida e intuitiva.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="section">
+  <div class="container">
+    <div class="section-head section-head-center">
+      <span class="section-label">Reputação</span>
+      <h2 class="section-title">O que dizem nossos usuários</h2>
+    </div>
+    <div class="reviews-grid" id="reviewsGrid"></div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="cta-block">
+      <span class="section-label" style="justify-content:center;display:flex">🚀 Comece hoje mesmo</span>
+      <h2>Pronto para dar o próximo passo?</h2>
+      <p>Seja você freelancer em busca de oportunidades ou empregador que precisa de talentos — o SITF tem tudo que você precisa.</p>
+      <div class="cta-btns">
+        <button class="btn btn-primary btn-xl" onclick="openModal('register')">Criar conta grátis →</button>
+        <a href="vagas.html" class="btn btn-ghost btn-xl">Explorar vagas</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="nav-logo" style="margin-bottom:0.75rem">
+              <img src="assets/img/logo.jpeg" alt="SITF Logo">
+          <span class="sitf-text" style="font-size:1.1rem">SI<span>TF</span></span>
+        </div>
+        <p class="footer-brand-desc">Sistema Integrado de Trabalho Freelancer. Conectando talentos e oportunidades em todo o Brasil.</p>
+        <p class="footer-tagline">Conecte. Trabalhe. Conquiste.</p>
+      </div>
+      <div class="footer-col"><h4>Para Freelancers</h4><ul>
+        <li><a href="freelancer.html">Área do Freelancer</a></li>
+        <li><a href="vagas.html">Buscar vagas</a></li>
+        <li><a href="freelancers.html">Perfis públicos</a></li>
+        <li><a href="como-funciona.html">Como funciona</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Para Empregadores</h4><ul>
+        <li><a href="empregador.html">Área do Empregador</a></li>
+        <li><a href="empregador.html#vagas">Publicar vagas</a></li>
+        <li><a href="freelancers.html">Encontrar talentos</a></li>
+        <li><a href="como-funciona.html">Como funciona</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>SITF</h4><ul>
+        <li><a href="como-funciona.html">Sobre o projeto</a></li>
+        <li><a href="#">Termos de uso</a></li>
+        <li><a href="#">Privacidade</a></li>
+        <li><a href="#">Suporte</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 SITF – Sistema Integrado de Trabalho Freelancer</span>
+      <span>Isabela Carnaval · Gabriel Obrelli · Beatriz Matias · 3º Informática</span>
+    </div>
+  </div>
+</footer>
+
+<div id="modalsContainer"></div>
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMsg"></span></div>
+
+<script src="shared.js"></script>
+<script>
+document.getElementById('modalsContainer').innerHTML = buildAuthModal();
+
+// Count vagas por categoria
+const vagas = await SITF.getVagas();
+const counts = {};
+vagas.forEach(v => {
+  const cat = (v.categoria||'').toLowerCase();
+  counts[cat] = (counts[cat]||0) + 1;
+});
+
+const setCount = (id, keys) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const total = keys.reduce((s,k) => s + (counts[k]||0), 0);
+  el.textContent = total + ' vaga' + (total !== 1 ? 's' : '');
+};
+
+setCount('cc-garcom',    ['garçom','garcom','eventos','garçom / eventos']);
+setCount('cc-limpeza',   ['limpeza','zelador','faxineiro']);
+setCount('cc-seguranca', ['segurança','seguranca','vigilante']);
+setCount('cc-motorista', ['motorista','manobrista','entregador','condutor']);
+setCount('cc-design',    ['design','designer','ui','ux']);
+setCount('cc-dev',       ['desenvolvimento','dev','programador','ti']);
+setCount('cc-cozinha',   ['cozinheiro','cozinha','chef','cozinheira']);
+document.getElementById('cc-all').textContent = vagas.length + ' vagas';
+
+document.getElementById('reviewsGrid').innerHTML = staticReviews.map(r => `
+  <div class="card review-card card-hover">
+    <div style="color:var(--amber);font-size:0.9rem;margin-bottom:0.85rem">${starsHTML(r.nota)}</div>
+    <p class="review-quote">"${r.texto}"</p>
+    <div class="review-author">
+      ${avatarHTML(r.nome,'sm')}
+      <div><div class="review-name">${r.nome}</div><div class="review-role">${r.role}</div></div>
+    </div>
+  </div>
+`).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vagas – SITF</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon_guia.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.vagas-page { padding-top: var(--nav-h); }
+.vagas-hero { background:var(--dark); padding:2.5rem 2rem; border-bottom:1px solid var(--border2); }
+.vagas-hero h1 { font-size:clamp(1.5rem,3vw,2.2rem); font-weight:800; margin-bottom:0.4rem; }
+.vagas-layout { display:flex; gap:2rem; max-width:1140px; margin:0 auto; padding:2rem; align-items:flex-start; }
+.filters-panel { width:240px; flex-shrink:0; position:sticky; top:calc(var(--nav-h) + 1rem); }
+.filters-body { background:var(--card); border:1px solid var(--border2); border-radius:var(--radius); padding:1.25rem; }
+.vagas-main { flex:1; min-width:0; }
+.vagas-toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:0.75rem; }
+.vagas-count { font-size:0.88rem; color:var(--text-muted); }
+.sort-select { background:var(--dark3); border:1px solid var(--border2); border-radius:var(--radius-xs); padding:0.4rem 0.75rem; color:var(--text); font-size:0.85rem; outline:none; }
+.vagas-grid { display:grid; grid-template-columns:1fr; gap:1rem; }
+.vaga-card-full { padding:1.35rem; display:flex; gap:1.25rem; align-items:flex-start; position:relative; overflow:hidden; }
+.vaga-card-full .company-logo { width:48px; height:48px; border-radius:var(--radius-xs); display:flex; align-items:center; justify-content:center; font-size:1.15rem; font-weight:800; color:#fff; flex-shrink:0; }
+.vaga-card-body { flex:1; min-width:0; }
+.vaga-card-right { display:flex; flex-direction:column; align-items:flex-end; gap:0.6rem; flex-shrink:0; }
+.vaga-price-big { font-size:1.1rem; font-weight:800; color:var(--text); }
+.vaga-price-big sub { font-size:0.72rem; font-weight:400; color:var(--text-muted); }
+.tag-list { display:flex; gap:0.35rem; flex-wrap:wrap; margin-top:0.6rem; }
+.pagination { display:flex; gap:0.5rem; justify-content:center; margin-top:2rem; flex-wrap:wrap; }
+@media(max-width:900px){ .vagas-layout{ flex-direction:column; padding:1.25rem; } .filters-panel{ width:100%; position:static; } }
+@media(max-width:560px){ .vaga-card-full{ flex-direction:column; } .vaga-card-right{ align-items:flex-start; flex-direction:row; flex-wrap:wrap; } }
+</style>
+</head>
+<body>
+<div class="scroll-progress"><div class="scroll-bar" id="scrollBar"></div></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.jpeg" alt="SITF Logo">
+    <span class="sitf-text">SI<span>TF</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Início</a>
+    <a href="vagas.html" class="active">Vagas</a>
+    <a href="freelancers.html">Freelancers</a>
+    <a href="como-funciona.html">Como Funciona</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions" id="navUserArea">
+    <button class="btn btn-ghost btn-sm" onclick="openModal('login')">Entrar</button>
+    <button class="btn btn-primary btn-sm" onclick="openModal('register')">Cadastrar</button>
+  </div>
+  <button class="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="index.html" onclick="toggleDrawer()">Início</a>
+  <a href="vagas.html" onclick="toggleDrawer()">Vagas</a>
+  <a href="freelancers.html" onclick="toggleDrawer()">Freelancers</a>
+  <a href="como-funciona.html" onclick="toggleDrawer()">Como Funciona</a>
+  <div class="sep"></div>
+  <a href="empregador.html" onclick="toggleDrawer()">Área do Empregador</a>
+  <a href="freelancer.html" onclick="toggleDrawer()">Área do Freelancer</a>
+  <div class="sep"></div>
+  <button class="btn btn-ghost btn-full" onclick="openModal('login');toggleDrawer()">Entrar</button>
+  <button class="btn btn-primary btn-full" onclick="openModal('register');toggleDrawer()">Cadastrar</button>
+</div>
+
+<div class="vagas-page">
+  <div class="vagas-hero">
+    <div class="container">
+      <h1>Vagas Disponíveis</h1>
+      <p style="color:var(--text-muted);font-size:0.9rem">Encontre a oportunidade ideal para o seu perfil</p>
+      <div style="margin-top:1.25rem">
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Buscar por título, habilidade ou empresa...">
+          <div class="divider-v"></div>
+          <input type="text" id="searchCat" placeholder="Categoria (ex: Garçom, Design, TI...)"
+            style="background:transparent;border:none;outline:none;padding:0.5rem 1rem;color:var(--text);font-family:inherit;font-size:0.85rem;min-width:200px">
+          <button class="btn btn-primary" onclick="applyFilters()">Buscar</button>
+        </div>
+        <div class="filter-tags" id="quickTags">
+          <button class="filter-tag" onclick="quickSearch('Garçom')">Garçom</button>
+          <button class="filter-tag" onclick="quickSearch('Manobrista')">Manobrista</button>
+          <button class="filter-tag" onclick="quickSearch('Design')">Design</button>
+          <button class="filter-tag" onclick="quickSearch('Desenvolvimento')">Dev</button>
+          <button class="filter-tag" onclick="quickSearch('Limpeza')">Limpeza</button>
+          <button class="filter-tag" onclick="quickSearch('Segurança')">Segurança</button>
+          <button class="filter-tag" onclick="quickSearch('Fotografia')">Fotografia</button>
+          <button class="filter-tag" onclick="quickSearch('Marketing')">Marketing</button>
+          <button class="filter-tag" onclick="quickSearch('Cozinheiro')">Cozinheiro</button>
+          <button class="filter-tag" onclick="quickSearch('Motorista')">Motorista</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vagas-layout">
+    <aside class="filters-panel">
+      <div class="filters-body">
+        <h3 style="font-size:0.85rem;font-weight:700;margin-bottom:1.25rem">Filtros</h3>
+
+        <div class="filter-block">
+          <div class="filter-block-title">Modalidade</div>
+          <label class="filter-check"><input type="checkbox" value="Remoto" onchange="applyFilters()"> Remoto</label>
+          <label class="filter-check"><input type="checkbox" value="Presencial" onchange="applyFilters()"> Presencial</label>
+          <label class="filter-check"><input type="checkbox" value="Híbrido" onchange="applyFilters()"> Híbrido</label>
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-block-title">Estado</div>
+          <select class="form-control" id="filterEstado" onchange="applyFilters()" style="font-size:0.82rem;padding:0.45rem 0.7rem">
+            <option value="">Todos os estados</option>
+            <option>SP</option><option>RJ</option><option>MG</option><option>RS</option>
+            <option>PR</option><option>SC</option><option>BA</option><option>CE</option>
+            <option>GO</option><option>DF</option><option>PE</option><option>AM</option>
+          </select>
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-block-title">Cidade</div>
+          <input class="form-control" type="text" id="filterCidade"
+            placeholder="Ex: São Paulo" oninput="applyFilters()"
+            style="font-size:0.82rem;padding:0.45rem 0.7rem">
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-block-title">Valor mínimo (R$)</div>
+          <div class="price-range">
+            <input type="number" id="filterMin" placeholder="0" min="0" oninput="applyFilters()">
+            <span>até</span>
+            <input type="number" id="filterMax" placeholder="∞" min="0" oninput="applyFilters()">
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-block-title">Destaque</div>
+          <label class="filter-check">
+            <input type="checkbox" id="filterDestaque" onchange="applyFilters()"> Somente destaques
+          </label>
+        </div>
+
+        <button class="btn btn-ghost btn-full btn-sm" onclick="clearFilters()" style="margin-top:0.5rem">
+          Limpar filtros
+        </button>
+      </div>
+    </aside>
+
+    <main class="vagas-main">
+      <div class="vagas-toolbar">
+        <span class="vagas-count" id="vagasCount">Carregando...</span>
+        <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+          <option value="recente">Mais recentes</option>
+          <option value="preco_asc">Menor valor</option>
+          <option value="preco_desc">Maior valor</option>
+          <option value="destaque">Em destaque</option>
+        </select>
+      </div>
+      <div class="vagas-grid" id="vagasGrid">
+        <div class="empty-state">
+          <img src="assets/animacao/loading.gif" alt="Carregando" style="width:48px;margin:0 auto 1rem">
+          <h3>Carregando vagas...</h3>
+        </div>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </main>
+  </div>
+</div>
+
+<div id="modalsContainer"></div>
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMsg"></span></div>
+
+<!-- MODAL DETALHE DA VAGA -->
+<div class="modal-backdrop" id="modalVaga">
+  <div class="modal-box modal-box-wide">
+    <div class="modal-header">
+      <div>
+        <h3 class="modal-title" id="mvTitle">Título da Vaga</h3>
+        <p class="modal-subtitle" id="mvEmpresa">Empresa</p>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('modalVaga').classList.remove('open')">✕</button>
+    </div>
+    <div id="mvBody"></div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+document.getElementById('modalsContainer').innerHTML = buildAuthModal();
+
+// Atualiza nav se logado
+const _user = SITF.getUser();
+if (_user) {
+  const na = document.getElementById('navUserArea');
+  if (na) na.innerHTML = `
+    <span style="font-size:0.82rem;color:var(--text-muted)">${_user.nome}</span>
+    <a href="${_user.tipo === 'empregador' ? 'empregador' : 'freelancer'}.html" class="btn btn-primary btn-sm">Meu Painel</a>
+    <button class="btn btn-danger btn-sm" onclick="SITF.clearUser();location.reload()">Sair</button>`;
+}
+
+const PER_PAGE = 8;
+let currentPage = 1;
+let filteredVagas = [];
+let todasVagas = [];
+
+function getFilters() {
+  const modChecked = [...document.querySelectorAll('.filter-check input[type=checkbox]:checked')]
+    .map(c => c.value).filter(v => v !== 'destaque');
+  return {
+    q:          (document.getElementById('searchInput')?.value || '').toLowerCase().trim(),
+    cat:        (document.getElementById('searchCat')?.value || '').toLowerCase().trim(),
+    modalidades: modChecked,
+    estado:     document.getElementById('filterEstado')?.value || '',
+    cidade:     (document.getElementById('filterCidade')?.value || '').toLowerCase().trim(),
+    min:        parseFloat(document.getElementById('filterMin')?.value) || 0,
+    max:        parseFloat(document.getElementById('filterMax')?.value) || Infinity,
+    destaque:   document.getElementById('filterDestaque')?.checked || false,
+    sort:       document.getElementById('sortSelect')?.value || 'recente',
+  };
+}
+
+function applyFilters() {
+  const f = getFilters();
+  let vagas = [...todasVagas];
+
+  if (f.q) vagas = vagas.filter(v =>
+    v.titulo.toLowerCase().includes(f.q) ||
+    v.empresa.toLowerCase().includes(f.q) ||
+    (v.tags||[]).some(t => t.toLowerCase().includes(f.q)) ||
+    (v.descricao||'').toLowerCase().includes(f.q)
+  );
+
+  if (f.cat) vagas = vagas.filter(v =>
+    (v.categoria||'').toLowerCase().includes(f.cat)
+  );
+
+  if (f.modalidades.length) vagas = vagas.filter(v => f.modalidades.includes(v.modalidade));
+
+  if (f.estado) vagas = vagas.filter(v =>
+    v.estado === f.estado || v.cidade === 'Nacional'
+  );
+
+  if (f.cidade) vagas = vagas.filter(v =>
+    (v.cidade||'').toLowerCase().includes(f.cidade) || v.cidade === 'Nacional'
+  );
+
+  if (f.min) vagas = vagas.filter(v => parseFloat(v.preco) >= f.min);
+  if (f.max !== Infinity) vagas = vagas.filter(v => parseFloat(v.preco) <= f.max);
+  if (f.destaque) vagas = vagas.filter(v => v.destaque == 1);
+
+  if (f.sort === 'recente')    vagas.sort((a,b) => new Date(b.criado_em) - new Date(a.criado_em));
+  else if (f.sort === 'preco_asc')  vagas.sort((a,b) => a.preco - b.preco);
+  else if (f.sort === 'preco_desc') vagas.sort((a,b) => b.preco - a.preco);
+  else if (f.sort === 'destaque')   vagas.sort((a,b) => (b.destaque||0) - (a.destaque||0));
+
+  filteredVagas = vagas;
+  currentPage = 1;
+  renderVagas();
+}
+
+function quickSearch(term) {
+  document.getElementById('searchCat').value = term;
+  applyFilters();
+  // mark active tag
+  document.querySelectorAll('.filter-tag').forEach(t => {
+    t.classList.toggle('active', t.textContent.trim() === term);
+  });
+}
+
+function clearFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchCat').value = '';
+  document.getElementById('filterEstado').value = '';
+  document.getElementById('filterCidade').value = '';
+  document.getElementById('filterMin').value = '';
+  document.getElementById('filterMax').value = '';
+  document.getElementById('filterDestaque').checked = false;
+  document.querySelectorAll('.filter-check input[type=checkbox]').forEach(c => c.checked = false);
+  document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+  applyFilters();
+}
+
+function modalidadeBadge(m) {
+  const map = { 'Remoto':'badge-remote', 'Presencial':'badge-presencial', 'Híbrido':'badge-hibrido' };
+  return `<span class="badge ${map[m]||'badge-new'}">${m}</span>`;
+}
+
+function renderVagas() {
+  const grid = document.getElementById('vagasGrid');
+  const total = filteredVagas.length;
+  document.getElementById('vagasCount').textContent =
+    total + ' vaga' + (total !== 1 ? 's' : '') + ' encontrada' + (total !== 1 ? 's' : '');
+
+  const page = filteredVagas.slice((currentPage-1)*PER_PAGE, currentPage*PER_PAGE);
+
+  if (!page.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <img src="assets/img/sem-resultado.png" alt="Sem resultados" style="width:80px;margin:0 auto 1rem;opacity:0.5">
+        <h3>Nenhuma vaga encontrada</h3>
+        <p>Tente ajustar os filtros ou usar outros termos.</p>
+        <button class="btn btn-outline" style="margin-top:1rem" onclick="clearFilters()">Limpar filtros</button>
+      </div>`;
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  grid.innerHTML = page.map(v => {
+    const tags = Array.isArray(v.tags) ? v.tags : (v.tags||'').split(',').filter(Boolean);
+    return `
+    <div class="card card-hover vaga-card-full" onclick="openVaga('${v.id}')">
+      ${v.destaque == 1 ? '<div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--blue))"></div>' : ''}
+      <div class="company-logo" style="background:${avatarColor(v.empresa)}">${initials(v.empresa)}</div>
+      <div class="vaga-card-body">
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.35rem">
+          <span style="font-size:0.78rem;color:var(--text-muted)">${v.empresa}</span>
+          ${v.destaque == 1 ? '<span class="badge badge-featured">Destaque</span>' : ''}
+          ${modalidadeBadge(v.modalidade)}
+          <span style="font-size:0.75rem;color:var(--text-dim)">${timeAgo(v.criado_em)}</span>
+        </div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:0.2rem">${v.titulo}</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.6rem">
+          📍 ${v.cidade||''}${v.estado?', '+v.estado:''} · ${v.categoria||'Outros'}
+        </div>
+        <p style="font-size:0.83rem;color:var(--text-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${v.descricao||''}</p>
+        <div class="tag-list">${tags.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+      </div>
+      <div class="vaga-card-right">
+        <div class="vaga-price-big">R$ ${v.preco}<sub>/${v.tipo_preco||'hora'}</sub></div>
+        <span style="font-size:0.72rem;color:var(--text-dim)">${(v.candidatos||[]).length} candidato(s)</span>
+        <button class="btn btn-primary btn-sm"
+          onclick="event.stopPropagation();candidatar('${v.id}')">
+          Candidatar →
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Paginação
+  const totalPages = Math.ceil(total / PER_PAGE);
+  let pag = '';
+  for (let i = 1; i <= totalPages; i++) {
+    pag += `<button class="btn ${i===currentPage?'btn-primary':'btn-secondary'} btn-sm"
+      onclick="goPage(${i})">${i}</button>`;
+  }
+  document.getElementById('pagination').innerHTML = pag;
+}
+
+function goPage(p) {
+  currentPage = p;
+  renderVagas();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function openVaga(id) {
+  const v = todasVagas.find(x => x.id === id);
+  if (!v) return;
+
+  const todos = await SITF.getUsers();
+  const emp   = todos.find(u => u.id === v.empregador_id);
+  const avals = await SITF.getAvaliacoes({ avaliado_id: v.empregador_id, tipo: 'freelancer_avalia_empregador' });
+  const avgRating = avals.length
+    ? (avals.reduce((s,a) => s+parseInt(a.nota), 0) / avals.length).toFixed(1)
+    : (emp?.rating || '–');
+
+  const tags = Array.isArray(v.tags) ? v.tags : (v.tags||'').split(',').filter(Boolean);
+
+  document.getElementById('mvTitle').textContent   = v.titulo;
+  document.getElementById('mvEmpresa').textContent = `${v.empresa} · ${v.cidade||''}${v.estado?', '+v.estado:''}`;
+
+  document.getElementById('mvBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;font-size:0.85rem">
+      <div><span style="color:var(--text-muted)">Categoria:</span> <strong>${v.categoria||'Outros'}</strong></div>
+      <div><span style="color:var(--text-muted)">Modalidade:</span> ${modalidadeBadge(v.modalidade)}</div>
+      <div><span style="color:var(--text-muted)">Valor:</span> <strong style="color:var(--purple-light)">R$ ${v.preco}/${v.tipo_preco||'hora'}</strong></div>
+      <div><span style="color:var(--text-muted)">Candidatos:</span> <strong>${(v.candidatos||[]).length}</strong></div>
+    </div>
+    <p style="font-size:0.88rem;line-height:1.7;color:var(--text-muted);margin-bottom:1.25rem">${v.descricao||''}</p>
+    <div style="margin-bottom:1.25rem">
+      <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:0.5rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em">Habilidades / Requisitos</div>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap">${tags.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+    </div>
+    ${emp ? `
+      <div style="background:var(--dark3);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.85rem">
+        ${avatarHTML(emp.nome,'md')}
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:0.9rem">${emp.nome}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted)">${emp.bio||'Empregador verificado'}</div>
+          <div style="font-size:0.8rem;color:var(--amber);margin-top:0.2rem">
+            ${starsHTML(parseFloat(avgRating)||0)}
+            <span style="color:var(--text-muted)">${avgRating} (${avals.length} avaliações)</span>
+          </div>
+        </div>
+        <a href="perfil.html?id=${emp.id}" target="_blank" class="btn btn-ghost btn-sm">Ver perfil</a>
+      </div>` : ''}
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+      <button class="btn btn-primary btn-lg"
+        onclick="candidatar('${v.id}');document.getElementById('modalVaga').classList.remove('open')">
+        Me candidatar
+      </button>
+      <button class="btn btn-ghost btn-lg"
+        onclick="document.getElementById('modalVaga').classList.remove('open')">
+        Fechar
+      </button>
+    </div>`;
+
+  document.getElementById('modalVaga').classList.add('open');
+}
+
+async function candidatar(vagaId) {
+  const user = SITF.getUser();
+  if (!user) { openModal('login'); showToast('Faça login para se candidatar.', 'warn'); return; }
+  if (user.tipo !== 'freelancer') { showToast('Apenas freelancers podem se candidatar.', 'warn'); return; }
+
+  const res = await SITF.createCandidatura({ vaga_id: vagaId, freelancer_id: user.id });
+  if (res.erro) { showToast(res.erro, 'warn'); return; }
+
+  showToast('Candidatura enviada com sucesso! 🎉', 'success');
+
+  // Atualiza contador local
+  const v = todasVagas.find(x => x.id === vagaId);
+  if (v) {
+    if (!Array.isArray(v.candidatos)) v.candidatos = [];
+    v.candidatos.push(user.id);
+  }
+  renderVagas();
+}
+
+// Verifica parâmetro cat na URL
+const urlParams = new URLSearchParams(window.location.search);
+const catParam  = urlParams.get('cat');
+if (catParam) document.getElementById('searchCat').value = catParam;
+
+// Carrega vagas
+(async () => {
+  try {
+    todasVagas = await SITF.getVagas();
+    applyFilters();
+  } catch(e) {
+    document.getElementById('vagasGrid').innerHTML = `
+      <div class="empty-state">
+        <img src="assets/img/erro.png" alt="Erro" style="width:80px;margin:0 auto 1rem;opacity:0.5">
+        <h3>Erro ao carregar vagas</h3>
+        <p>Verifique sua conexão e tente novamente.</p>
+        <button class="btn btn-primary" style="margin-top:1rem" onclick="location.reload()">Tentar novamente</button>
+      </div>`;
+  }
+})();
+</script>
+</body>
+</html>

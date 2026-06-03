@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Área do Freelancer – SITF</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon_guia.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.stat-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:1rem; margin-bottom:2rem; }
+.chat-wrap { background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; height:480px; }
+.vaga-result { padding:1.25rem; display:flex; gap:1rem; align-items:flex-start; margin-bottom:0.85rem; }
+.rating-form { background:var(--card); border:1px solid var(--border2); border-radius:var(--radius); padding:1.5rem; margin-bottom:1rem; }
+@media(max-width:768px){ .dash-layout{ flex-direction:column; } .dash-sidebar{ width:100%; height:auto; } #pageContent{ padding:1.25rem; } }
+</style>
+</head>
+<body>
+<div class="scroll-progress"><div class="scroll-bar" id="scrollBar"></div></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/img/logo.jpeg" alt="SITF Logo">
+    <span class="sitf-text">SI<span>TF</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Início</a>
+    <a href="vagas.html">Vagas</a>
+    <a href="freelancers.html">Freelancers</a>
+    <a href="como-funciona.html">Como Funciona</a>
+    <a href="freelancer.html" class="active">Meu Painel</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions" id="navUserArea">
+    <button class="btn btn-ghost btn-sm" onclick="openModal('login')">Entrar</button>
+    <button class="btn btn-primary btn-sm" onclick="openModal('register')">Cadastrar</button>
+  </div>
+  <button class="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="index.html">🏠 Início</a>
+  <a href="vagas.html">🔍 Vagas</a>
+  <a href="freelancers.html">👥 Freelancers</a>
+  <a href="freelancer.html">💼 Meu Painel</a>
+  <div class="sep"></div>
+  <button class="btn btn-ghost btn-full" onclick="openModal('login');toggleDrawer()">Entrar</button>
+</div>
+
+<div class="dash-layout" style="padding-top:var(--nav-h)">
+  <!-- SIDEBAR -->
+  <aside class="dash-sidebar">
+    <div id="sideProfile" style="padding:1.25rem;border-bottom:1px solid var(--border2);margin-bottom:0.75rem">
+      <div id="spAvatar" style="margin-bottom:0.6rem"></div>
+      <div id="spName" style="font-weight:700;font-size:0.9rem"></div>
+      <div style="font-size:0.75rem;color:var(--purple-light)">Freelancer</div>
+      <div id="spRating" style="font-size:0.78rem;color:var(--amber);margin-top:0.25rem"></div>
+    </div>
+<div class="dash-nav-section">Principal</div>
+<button class="dash-nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
+  <span class="icon"><img src="assets/img/dashboard.png" style="width:18px;height:18px;vertical-align:middle"></span> Dashboard
+</button>
+<button class="dash-nav-item" id="nav-perfil" onclick="showPage('perfil')">
+  <span class="icon"><img src="assets/img/perfil.png" style="width:18px;height:18px;vertical-align:middle"></span> Meu Perfil
+</button>
+<button class="dash-nav-item" id="nav-vagas" onclick="showPage('vagas')">
+  <span class="icon"><img src="assets/img/vagas.png" style="width:18px;height:18px;vertical-align:middle"></span> Buscar Vagas
+</button>
+<button class="dash-nav-item" id="nav-candidaturas" onclick="showPage('candidaturas')">
+  <span class="icon"><img src="assets/img/candidaturas.png" style="width:18px;height:18px;vertical-align:middle"></span> Minhas Candidaturas
+</button>
+<div class="dash-nav-section">Comunicação</div>
+<button class="dash-nav-item" id="nav-chat" onclick="showPage('chat')">
+  <span class="icon"><img src="assets/img/chat.png" style="width:18px;height:18px;vertical-align:middle"></span>
+  Chat <span id="chatBadge" style="display:none;background:var(--purple);color:#fff;font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:99px;margin-left:4px">0</span>
+</button>
+<div class="dash-nav-section">Avaliações</div>
+<button class="dash-nav-item" id="nav-avaliar" onclick="showPage('avaliar')">
+  <span class="icon"><img src="assets/img/avaliar.png" style="width:18px;height:18px;vertical-align:middle"></span> Avaliar Empregadores
+</button>
+<button class="dash-nav-item" id="nav-minhas-avals" onclick="showPage('minhas-avals')">
+  <span class="icon"><img src="assets/img/historico-servico.png" style="width:18px;height:18px;vertical-align:middle"></span> Avaliações Recebidas
+</button>
+<div class="dash-nav-section">Histórico</div>
+<button class="dash-nav-item" id="nav-historico" onclick="showPage('historico')">
+  <span class="icon"><img src="assets/img/historico.png" style="width:18px;height:18px;vertical-align:middle"></span> Histórico
+</button>
+<div style="padding:1rem;margin-top:auto">
+  <button class="btn btn-danger btn-full btn-sm" onclick="logout()">
+    <img src="assets/img/sair.png" style="width:14px;height:14px;vertical-align:middle;margin-right:4px"> Sair da conta
+  </button>
+</div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div id="pageContent" style="flex:1;padding:2rem;min-width:0;overflow-x:hidden"></div>
+</div>
+
+<div id="modalsContainer"></div>
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✅</span><span id="toastMsg"></span></div>
+
+<!-- MODAL AVALIAR EMPREGADOR -->
+<div class="modal-backdrop" id="modalAvaliarEmp">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div><h3 class="modal-title">⭐ Avaliar Empregador</h3><p class="modal-subtitle" id="avalEmpNome">-</p></div>
+      <button class="modal-close" onclick="document.getElementById('modalAvaliarEmp').classList.remove('open')">✕</button>
+    </div>
+    <input type="hidden" id="avalEmpId">
+    <input type="hidden" id="avalEmpVagaId">
+    <div class="form-group">
+      <label class="form-label">Nota geral</label>
+      <div class="star-input" id="starInputEmp">
+        <span onclick="setStarsEmp(1)">★</span><span onclick="setStarsEmp(2)">★</span>
+        <span onclick="setStarsEmp(3)">★</span><span onclick="setStarsEmp(4)">★</span><span onclick="setStarsEmp(5)">★</span>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Comentário</label>
+      <textarea class="form-control" id="avalEmpComentario" rows="4" placeholder="Descreva sua experiência: briefing claro, comunicação, pagamento pontual..."></textarea>
+    </div>
+    <button class="btn btn-primary btn-full btn-lg" onclick="enviarAvaliacaoEmp()">Enviar avaliação ⭐</button>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+document.getElementById('modalsContainer').innerHTML = buildAuthModal();
+
+let currentUser = null;
+let selectedStarsEmp = 0;
+let activeChatUser = null;
+
+function setStarsEmp(n) {
+  selectedStarsEmp = n;
+  document.querySelectorAll('#starInputEmp span').forEach((s, i) => s.classList.toggle('active', i < n));
+}
+
+function updateNavUser() {
+  const na = document.getElementById('navUserArea');
+  if (!na || !currentUser) return;
+  na.innerHTML = `
+    <span style="font-size:0.82rem;color:var(--text-muted)">${currentUser.nome}</span>
+    <button class="btn btn-danger btn-sm" onclick="logout()">Sair</button>`;
+}
+
+async function updateChatBadge() {
+  try {
+    const badge = document.getElementById('chatBadge');
+    if (!badge || !currentUser) return;
+
+    // Busca todas as mensagens não lidas
+    let unread = 0;
+
+    if (currentUser.tipo === 'empregador') {
+      const vagas  = await SITF.getVagas();
+      const minhas = vagas.filter(v => v.empregador_id === currentUser.id);
+      for (const v of minhas) {
+        const cands = await SITF.getCandidaturas({ vaga_id: v.id });
+        if (!Array.isArray(cands)) continue;
+        for (const c of cands) {
+          const chatKey = [currentUser.id, c.freelancer_id].sort().join('_');
+          const msgs    = await SITF.getMsgs(chatKey);
+          if (Array.isArray(msgs)) {
+            unread += msgs.filter(m => m.sender_id !== currentUser.id && !m.lido).length;
+          }
+        }
+      }
+    } else {
+      const cands = await SITF.getCandidaturas({ freelancer_id: currentUser.id });
+      const vagas = await SITF.getVagas();
+      if (Array.isArray(cands)) {
+        for (const c of cands) {
+          const v = vagas.find(x => x.id === c.vaga_id);
+          if (!v) continue;
+          const chatKey = [currentUser.id, v.empregador_id].sort().join('_');
+          const msgs    = await SITF.getMsgs(chatKey);
+          if (Array.isArray(msgs)) {
+            unread += msgs.filter(m => m.sender_id !== currentUser.id && !m.lido).length;
+          }
+        }
+      }
+    }
+
+    if (unread > 0) {
+      badge.textContent = unread > 9 ? '9+' : unread;
+      badge.style.display = 'inline';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch(e) {
+    console.log('chatBadge error:', e);
+  }
+}
+
+async function checkAuth() {
+  currentUser = SITF.getUser();
+  if (!currentUser || currentUser.tipo !== 'freelancer') {
+    document.getElementById('pageContent').innerHTML = `
+      <div class="empty-state" style="padding:5rem 2rem">
+        <div class="empty-state-icon">🔒</div>
+        <h3>Área restrita a freelancers</h3>
+        <p style="margin:0.75rem 0 1.5rem">Faça login ou crie uma conta como freelancer.</p>
+        <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary btn-lg" onclick="openModal('login')">Entrar</button>
+          <button class="btn btn-outline btn-lg" onclick="openModal('register')">Criar conta</button>
+        </div>
+      </div>`;
+    return false;
+  }
+  document.getElementById('spAvatar').innerHTML = avatarHTML(currentUser.nome, 'md');
+  document.getElementById('spName').textContent = currentUser.nome;
+  const avals = await SITF.getAvaliacoes({ avaliado_id: currentUser.id, tipo: 'empregador_avalia_freelancer' });
+  const avg = avals.length ? (avals.reduce((s,a) => s + parseInt(a.nota), 0) / avals.length).toFixed(1) : (currentUser.rating || 0);
+  document.getElementById('spRating').innerHTML = starsHTML(parseFloat(avg)) + ' ' + avg;
+  updateNavUser();
+  return true;
+}
+
+function logout() {
+  SITF.clearUser();
+  window.location.href = 'index.html';
+}
+
+function showPage(page) {
+  document.querySelectorAll('.dash-nav-item').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('nav-' + page);
+  if (btn) btn.classList.add('active');
+  const pages = {
+    dashboard:      pageDashboard,
+    perfil:         pagePerfil,
+    vagas:          pageVagas,
+    candidaturas:   pageCandidaturas,
+    chat:           pageChat,
+    avaliar:        pageAvaliar,
+    'minhas-avals': pageMinhasAvals
+  };
+  if (pages[page]) pages[page]();
+}
+
+/* ── DASHBOARD ──────────────────────────────────── */
+async function pageDashboard() {
+  if (!await checkAuth()) return;
+
+  const [allCands, avals] = await Promise.all([
+    SITF.getCandidaturas({ freelancer_id: currentUser.id }),
+    SITF.getAvaliacoes({ avaliado_id: currentUser.id, tipo: 'empregador_avalia_freelancer' })
+  ]);
+
+  const avg = avals.length
+    ? (avals.reduce((s,a) => s + parseInt(a.nota), 0) / avals.length).toFixed(1)
+    : (currentUser.rating || '–');
+  const aprovadas = allCands.filter(c => c.status === 'aprovado').length;
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.75rem">
+      <h2 style="font-size:1.5rem;font-weight:800">Olá, ${currentUser.nome}! 👋</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">Bem-vindo ao seu painel de freelancer.</p>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-value">${allCands.length}</div><div class="stat-label">Candidaturas enviadas</div></div>
+      <div class="stat-card"><div class="stat-value">${aprovadas}</div><div class="stat-label">Aprovações</div></div>
+      <div class="stat-card"><div class="stat-value">${currentUser.projetos || 0}</div><div class="stat-label">Projetos concluídos</div></div>
+      <div class="stat-card"><div class="stat-value">${avg} ⭐</div><div class="stat-label">Sua avaliação média</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+      <div class="card" style="padding:1.5rem">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem">Candidaturas recentes</h3>
+        <div id="candsMini"><p style="font-size:0.85rem;color:var(--text-muted)">Carregando...</p></div>
+        <a href="vagas.html" class="btn btn-primary btn-full btn-sm" style="margin-top:0.75rem">🔍 Ver vagas disponíveis</a>
+      </div>
+      <div class="card" style="padding:1.5rem">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem">Ações rápidas</h3>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <a href="vagas.html" class="btn btn-primary btn-full">🔍 Buscar vagas</a>
+          <button class="btn btn-secondary btn-full" onclick="showPage('candidaturas')">📋 Minhas candidaturas</button>
+          <button class="btn btn-secondary btn-full" onclick="showPage('chat')">💬 Abrir chat</button>
+          <button class="btn btn-secondary btn-full" onclick="showPage('perfil')">✏️ Editar meu perfil</button>
+          <button class="btn btn-secondary btn-full" onclick="showPage('avaliar')">⭐ Avaliar empregadores</button>
+        </div>
+      </div>
+    </div>`;
+
+  renderCandsMini(allCands.slice(-3).reverse());
+}
+
+async function renderCandsMini(cands) {
+  const el = document.getElementById('candsMini');
+  if (!el) return;
+  if (!cands.length) {
+    el.innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted)">Nenhuma candidatura ainda.</p>';
+    return;
+  }
+  const vagas = await SITF.getVagas();
+  const badgeMap = { pendente:'badge-new', aprovado:'badge-remote', reprovado:'badge-urgent' };
+  el.innerHTML = cands.map(c => {
+    const v = vagas.find(x => x.id === c.vaga_id);
+    if (!v) return '';
+    return `<div style="padding:0.75rem;background:var(--dark3);border-radius:var(--radius-sm);margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:0.85rem;font-weight:600">${v.titulo}</div>
+        <div style="font-size:0.72rem;color:var(--text-muted)">${v.empresa} · ${timeAgo(c.criado_em)}</div>
+      </div>
+      <span class="badge ${badgeMap[c.status]||'badge-new'}">${c.status}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ── PERFIL ─────────────────────────────────────── */
+async function pagePerfil() {
+  if (!await checkAuth()) return;
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.75rem">
+      <h2 style="font-size:1.5rem;font-weight:800">💼 Meu Perfil</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">Configure seu perfil para atrair empregadores</p>
+    </div>
+    <div class="card" style="padding:2rem;max-width:680px">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem">
+        <div>${avatarHTML(currentUser.nome,'xl')}</div>
+        <div>
+          <div style="font-size:1.2rem;font-weight:800">${currentUser.nome}</div>
+          <div style="font-size:0.82rem;color:var(--purple-light)">Conta Freelancer</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem">${currentUser.email}</div>
+        </div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Nome completo *</label>
+          <input class="form-control" id="pNome" value="${currentUser.nome}"></div>
+        <div class="form-group"><label class="form-label">Área principal</label>
+          <select class="form-control" id="pArea">
+            <option>Design</option><option>Desenvolvimento</option><option>Marketing</option>
+            <option>Redação</option><option>Fotografia</option><option>Vídeo</option><option>Consultoria</option>
+          </select></div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Cidade</label>
+          <input class="form-control" id="pCidade" value="${currentUser.cidade||''}"></div>
+        <div class="form-group"><label class="form-label">Estado</label>
+          <select class="form-control" id="pEstado">
+            <option value="">Selecione</option>
+            <option>SP</option><option>RJ</option><option>MG</option><option>RS</option>
+            <option>PR</option><option>SC</option><option>BA</option><option>CE</option>
+            <option>GO</option><option>DF</option>
+          </select></div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Valor por hora (R$)</label>
+          <input class="form-control" type="number" id="pRate" value="${currentUser.rate||0}" min="0"></div>
+        <div class="form-group"><label class="form-label">Tipo de cobrança</label>
+          <select class="form-control" id="pRateType">
+            <option value="hora">Por hora</option>
+            <option value="projeto">Por projeto</option>
+            <option value="dia">Por dia</option>
+          </select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Bio / Sobre mim</label>
+        <textarea class="form-control" id="pBio" rows="4">${currentUser.bio||''}</textarea></div>
+      <div class="form-group"><label class="form-label">Habilidades (separadas por vírgula)</label>
+        <input class="form-control" id="pSkills" value="${(currentUser.skills||[]).join(', ')}"></div>
+      <div class="form-group"><label class="form-label">Portfólio / LinkedIn / GitHub</label>
+        <input class="form-control" id="pPortfolio" value="${currentUser.portfolio||''}"></div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <button class="btn btn-primary btn-lg" onclick="salvarPerfil()">Salvar alterações ✅</button>
+        <a href="freelancers.html" class="btn btn-ghost btn-lg" target="_blank">Ver perfil público →</a>
+      </div>
+    </div>`;
+  const sel = document.getElementById('pEstado');
+  if (sel && currentUser.estado) sel.value = currentUser.estado;
+  const rt = document.getElementById('pRateType');
+  if (rt && currentUser.rate_type) rt.value = currentUser.rate_type;
+}
+
+async function salvarPerfil() {
+  const skills = document.getElementById('pSkills').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const dados = {
+    id:        currentUser.id,
+    nome:      document.getElementById('pNome').value.trim(),
+    cidade:    document.getElementById('pCidade').value.trim(),
+    estado:    document.getElementById('pEstado').value,
+    rate:      parseFloat(document.getElementById('pRate').value) || 0,
+    rateType:  document.getElementById('pRateType').value,
+    bio:       document.getElementById('pBio').value.trim(),
+    skills,
+    portfolio: document.getElementById('pPortfolio').value.trim(),
+    online:    1,
+  };
+  const res = await SITF.updateUsuario(dados);
+  if (res.sucesso) {
+    const updated = { ...currentUser, ...dados };
+    SITF.setUser(updated);
+    currentUser = updated;
+    document.getElementById('spName').textContent = updated.nome;
+    showToast('Perfil atualizado com sucesso! ✅', 'success');
+  } else {
+    showToast('Erro ao salvar perfil.', 'error');
+  }
+}
+
+function previewFoto(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+
+  // Preview local imediato
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('fotoPreview');
+    if (prev) prev.innerHTML = `<img src="${e.target.result}"
+      style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  };
+  reader.readAsDataURL(file);
+
+  // Upload para o servidor
+  uploadFotoServidor(file);
+}
+
+async function uploadFotoServidor(file) {
+  try {
+    showToast('Enviando foto...', 'info');
+    const res = await SITF.uploadFoto(file, currentUser.id);
+    if (res.sucesso) {
+      const updated = { ...currentUser, foto: res.foto };
+      SITF.setUser(updated);
+      currentUser = updated;
+      showToast('Foto atualizada com sucesso! ✅', 'success');
+    } else {
+      showToast(res.erro || 'Erro ao enviar foto.', 'error');
+    }
+  } catch(e) {
+    showToast('Erro de conexão ao enviar foto.', 'error');
+    console.error(e);
+  }
+}
+
+/* ── BUSCAR VAGAS ────────────────────────────────── */
+async function pageVagas() {
+  if (!await checkAuth()) return;
+
+  const [todasVagas, cands] = await Promise.all([
+    SITF.getVagas(),
+    SITF.getCandidaturas({ freelancer_id: currentUser.id })
+  ]);
+
+  const vagas = todasVagas.filter(v => v.status === 'aberta');
+  window._vagasData = vagas;
+  window._candIds   = new Set(cands.map(c => c.vaga_id));
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.5rem">
+      <h2 style="font-size:1.5rem;font-weight:800">🔍 Buscar Vagas</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">${vagas.length} vagas abertas disponíveis</p>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
+      <input class="form-control" id="buscaInput" placeholder="Buscar por título, empresa ou habilidade..."
+        style="flex:1;min-width:200px" oninput="filtrarVagas()">
+      <input class="form-control" id="buscaCat"
+  placeholder="Área (ex: Garçom, Dev...)"
+  style="width:180px"
+  oninput="filtrarVagas()"
+  list="catSugestoesFreela">
+<datalist id="catSugestoesFreela">
+  <option>Garçom</option>
+  <option>Manobrista</option>
+  <option>Limpeza</option>
+  <option>Segurança</option>
+  <option>Motorista</option>
+  <option>Cozinheiro</option>
+  <option>Entregador</option>
+  <option>Recepcionista</option>
+  <option>Design</option>
+  <option>Desenvolvimento</option>
+  <option>Marketing</option>
+  <option>Fotografia</option>
+  <option>Redação</option>
+  <option>Consultoria</option>
+</datalist>
+      <select class="form-control" id="buscaModal" style="width:140px" onchange="filtrarVagas()">
+        <option value="">Modalidade</option>
+        <option>Remoto</option><option>Presencial</option><option>Híbrido</option>
+      </select>
+    </div>
+    <div id="vagasResultados"></div>`;
+
+  filtrarVagas();
+}
+
+function filtrarVagas() {
+  const q     = (document.getElementById('buscaInput')?.value||'').toLowerCase();
+  const cat   = document.getElementById('buscaCat')?.value||'';
+  const modal = document.getElementById('buscaModal')?.value||'';
+  let vagas   = window._vagasData || [];
+
+  if (q)     vagas = vagas.filter(v => v.titulo.toLowerCase().includes(q) || v.empresa.toLowerCase().includes(q) || (v.tags||[]).some(t=>t.toLowerCase().includes(q)));
+  if (cat) vagas = vagas.filter(v => (v.categoria||'').toLowerCase().includes(cat.toLowerCase()));
+  if (modal) vagas = vagas.filter(v => v.modalidade === modal);
+
+  const candIds = window._candIds || new Set();
+  const grid    = document.getElementById('vagasResultados');
+  if (!grid) return;
+
+  if (!vagas.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">😕</div><h3>Nenhuma vaga encontrada</h3></div>';
+    return;
+  }
+
+  grid.innerHTML = vagas.map(v => {
+    const jaC  = candIds.has(v.id);
+    const tags = Array.isArray(v.tags) ? v.tags : (v.tags||'').split(',').filter(Boolean);
+    return `<div class="card" style="padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;margin-bottom:0.85rem">
+      <div style="width:44px;height:44px;border-radius:8px;background:${avatarColor(v.empresa)};display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">${initials(v.empresa)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:0.95rem;font-weight:700;margin-bottom:0.15rem">${v.titulo}</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.5rem">${v.empresa} · 📍 ${v.cidade||''}${v.estado?', '+v.estado:''} · ${v.modalidade}</div>
+        <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-bottom:0.6rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${v.descricao}</p>
+        <div style="display:flex;gap:0.35rem;flex-wrap:wrap">${tags.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0">
+        <div style="font-size:1rem;font-weight:800">R$ ${v.preco}<sub style="font-size:0.68rem;font-weight:400;color:var(--text-muted)">/${v.tipo_preco}</sub></div>
+        ${v.destaque ? '<span class="badge badge-featured">⭐ Destaque</span>' : ''}
+        ${jaC
+          ? '<span class="badge badge-remote">✓ Candidatado</span>'
+          : `<button class="btn btn-primary btn-sm" onclick="candidatar('${v.id}')">Candidatar →</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function candidatar(vagaId) {
+  const res = await SITF.createCandidatura({ vaga_id: vagaId, freelancer_id: currentUser.id });
+  if (res.erro) { showToast(res.erro, 'warn'); return; }
+  window._candIds && window._candIds.add(vagaId);
+  showToast('Candidatura enviada com sucesso! 🎉', 'success');
+  filtrarVagas();
+}
+
+/* ── CANDIDATURAS ───────────────────────────────── */
+async function pageCandidaturas() {
+  if (!await checkAuth()) return;
+
+  const [cands, vagas] = await Promise.all([
+    SITF.getCandidaturas({ freelancer_id: currentUser.id }),
+    SITF.getVagas()
+  ]);
+
+  const badgeMap = { pendente:'badge-new', aprovado:'badge-remote', reprovado:'badge-urgent' };
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.75rem">
+      <h2 style="font-size:1.5rem;font-weight:800">📋 Minhas Candidaturas</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">${cands.length} candidatura${cands.length!==1?'s':''}</p>
+    </div>
+    ${cands.length ? cands.slice().reverse().map(c => {
+      const v = vagas.find(x => x.id === c.vaga_id);
+      if (!v) return '';
+      return `<div class="card" style="padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;margin-bottom:0.85rem">
+        <div style="width:44px;height:44px;border-radius:8px;background:${avatarColor(v.empresa)};display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">${initials(v.empresa)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:0.95rem;font-weight:700">${v.titulo}</div>
+          <div style="font-size:0.78rem;color:var(--text-muted)">${v.empresa} · 📍 ${v.cidade||''}${v.estado?', '+v.estado:''} · R$ ${v.preco}/${v.tipo_preco}</div>
+          <div style="font-size:0.72rem;color:var(--text-dim);margin-top:0.2rem">Enviada ${timeAgo(c.criado_em)}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;flex-shrink:0">
+          <span class="badge ${badgeMap[c.status]||'badge-new'}">${c.status}</span>
+          ${c.status==='aprovado' ? `<button class="btn btn-ghost btn-sm" onclick="chatWithEmp('${v.empregador_id}','${v.empresa}')">💬 Chat</button>` : ''}
+          <button class="btn btn-ghost btn-sm" onclick="chatWithEmp('${v.empregador_id}','${v.empresa}')">💬 Chat</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.open('perfil.html?id=${v.empregador_id}','_blank')">👤</button>
+          </div>
+      </div>`;
+    }).join('') : `
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <h3>Nenhuma candidatura enviada</h3>
+        <p>Explore as vagas disponíveis e candidate-se!</p>
+        <button class="btn btn-primary" style="margin-top:1rem" onclick="showPage('vagas')">🔍 Ver vagas</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.open('perfil.html?id=${v.empregador_id}','_blank')">👤</button>
+      </div>`}`;
+      
+}
+
+/* ── CHAT ───────────────────────────────────────── */
+async function pageChat() {
+  if (!await checkAuth()) return;
+
+  const [cands, todosUsers, vagas] = await Promise.all([
+    SITF.getCandidaturas({ freelancer_id: currentUser.id }),
+    SITF.getUsers(),
+    SITF.getVagas()
+  ]);
+
+  const empIds = [...new Set(cands.map(c => {
+    const v = vagas.find(x => x.id === c.vaga_id);
+    return v ? v.empregador_id : null;
+  }).filter(Boolean))];
+
+  const empUsers = todosUsers.filter(u => empIds.includes(u.id));
+  if (!activeChatUser && empUsers.length) activeChatUser = empUsers[0];
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.25rem"><h2 style="font-size:1.5rem;font-weight:800">💬 Chat</h2></div>
+    <div class="chat-wrap">
+      <div class="chat-layout">
+        <div class="chat-sidebar">
+          <div class="chat-sidebar-header">
+            Conversas
+            <span style="font-size:0.72rem;background:var(--purple);color:#fff;padding:0.1rem 0.5rem;border-radius:99px">${empUsers.length}</span>
+          </div>
+          <div class="chat-contacts">
+            ${empUsers.length ? empUsers.map(u => `
+              <div class="contact-item ${activeChatUser&&activeChatUser.id===u.id?'active':''}" onclick="selectChatUser('${u.id}')">
+                ${avatarHTML(u.nome,'sm')}
+                <div class="contact-info">
+                  <div class="contact-name">${u.nome}</div>
+                  <div class="contact-preview">${u.bio?u.bio.substring(0,30)+'...':'Empregador'}</div>
+                </div>
+              </div>`).join('') :
+              '<div style="padding:1.5rem;text-align:center;font-size:0.82rem;color:var(--text-muted)">Candidate-se a vagas para iniciar conversas.</div>'}
+          </div>
+        </div>
+        <div class="chat-main" id="chatMain">
+          <div class="empty-state" style="margin:auto">
+            <div class="empty-state-icon">💬</div>
+            <h3>Carregando...</h3>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  if (activeChatUser) await renderChatMain(activeChatUser);
+}
+
+async function renderChatMain(peer) {
+  const chatKey = [currentUser.id, peer.id].sort().join('_');
+  const msgs    = await SITF.getMsgs(chatKey);
+
+  document.getElementById('chatMain').innerHTML = `
+    <div class="chat-header">
+      ${avatarHTML(peer.nome,'sm')}
+      <div class="chat-header-info">
+        <div class="chat-peer-name">${peer.nome}</div>
+        <div class="chat-peer-status">Empregador</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMsgs">
+      ${msgs.length ? msgs.map(m => `
+        <div class="message ${m.sender_id===currentUser.id?'outgoing':''}">
+          ${m.sender_id!==currentUser.id ? avatarHTML(peer.nome,'sm') : ''}
+          <div><div class="msg-bubble">${m.texto}</div><div class="msg-time">${timeAgo(m.criado_em)}</div></div>
+          ${m.sender_id===currentUser.id ? avatarHTML(currentUser.nome,'sm') : ''}
+        </div>`).join('') :
+        `<div style="text-align:center;padding:2rem;font-size:0.82rem;color:var(--text-muted)">Início da conversa com ${peer.nome}</div>`}
+    </div>
+    <div class="chat-composer">
+      <input class="composer-input" id="msgInputField" placeholder="Digite sua mensagem..."
+        onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="send-btn" onclick="sendMsg()">➤</button>
+    </div>`;
+
+  const el = document.getElementById('chatMsgs');
+  if (el) el.scrollTop = el.scrollHeight;
+}
+
+async function selectChatUser(id) {
+  const users = await SITF.getUsers();
+  activeChatUser = users.find(u => u.id === id);
+  await pageChat();
+}
+
+async function chatWithEmp(id) {
+  const users = await SITF.getUsers();
+  activeChatUser = users.find(u => u.id === id);
+  showPage('chat');
+}
+
+async function sendMsg() {
+  const input = document.getElementById('msgInputField');
+  if (!input || !input.value.trim() || !activeChatUser) return;
+  const texto = input.value.trim();
+  input.value = '';
+  await SITF.sendMsg({
+    chat_key:  [currentUser.id, activeChatUser.id].sort().join('_'),
+    sender_id: currentUser.id,
+    texto
+  });
+  await renderChatMain(activeChatUser);
+}
+
+/* ── AVALIAR EMPREGADORES ───────────────────────── */
+async function pageAvaliar() {
+  if (!await checkAuth()) return;
+
+  const [cands, vagas, todosUsers, avals] = await Promise.all([
+    SITF.getCandidaturas({ freelancer_id: currentUser.id }),
+    SITF.getVagas(),
+    SITF.getUsers(),
+    SITF.getAvaliacoes()
+  ]);
+
+  const aprovadas = cands.filter(c => c.status === 'aprovado');
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.75rem">
+      <h2 style="font-size:1.5rem;font-weight:800">⭐ Avaliar Empregadores</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">Avalie os empregadores com quem você trabalhou</p>
+    </div>
+    ${aprovadas.length ? aprovadas.map(c => {
+      const v   = vagas.find(x => x.id === c.vaga_id);
+      const emp = todosUsers.find(u => u.id === (v && v.empregador_id));
+      if (!v || !emp) return '';
+      const jaAvaliou = avals.find(a =>
+        a.avaliador_id === currentUser.id &&
+        a.avaliado_id  === emp.id &&
+        a.vaga_id      === v.id &&
+        a.tipo         === 'freelancer_avalia_empregador'
+      );
+      return `<div class="rating-form">
+        <div style="display:flex;align-items:center;gap:0.85rem;margin-bottom:0.85rem">
+          ${avatarHTML(emp.nome,'md')}
+          <div>
+            <div style="font-weight:600">${emp.nome}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">Vaga: ${v.titulo}</div>
+          </div>
+          ${jaAvaliou
+            ? '<span class="badge badge-remote" style="margin-left:auto">Avaliado ✓</span>'
+            : `<button class="btn btn-primary btn-sm" style="margin-left:auto"
+                onclick="abrirAvaliarEmp('${emp.id}','${emp.nome}','${v.id}')">⭐ Avaliar</button>`}
+        </div>
+        ${jaAvaliou ? `<div style="font-size:0.82rem;color:var(--text-muted);font-style:italic">"${jaAvaliou.comentario}" · ${starsHTML(parseInt(jaAvaliou.nota))}</div>` : ''}
+      </div>`;
+    }).join('') : `
+      <div class="empty-state">
+        <div class="empty-state-icon">⭐</div>
+        <h3>Nenhum empregador para avaliar</h3>
+        <p>Você poderá avaliar empregadores após ter candidaturas aprovadas.</p>
+      </div>`}`;
+}
+
+function abrirAvaliarEmp(empId, empNome, vagaId) {
+  document.getElementById('avalEmpId').value     = empId;
+  document.getElementById('avalEmpVagaId').value = vagaId;
+  document.getElementById('avalEmpNome').textContent = empNome;
+  selectedStarsEmp = 0;
+  document.querySelectorAll('#starInputEmp span').forEach(s => s.classList.remove('active'));
+  document.getElementById('avalEmpComentario').value = '';
+  document.getElementById('modalAvaliarEmp').classList.add('open');
+}
+
+async function enviarAvaliacaoEmp() {
+  if (!selectedStarsEmp) { showToast('Selecione uma nota.', 'warn'); return; }
+  const comentario = document.getElementById('avalEmpComentario').value.trim();
+  if (!comentario)  { showToast('Escreva um comentário.', 'warn'); return; }
+  const res = await SITF.createAvaliacao({
+    vaga_id:      document.getElementById('avalEmpVagaId').value,
+    avaliador_id: currentUser.id,
+    avaliado_id:  document.getElementById('avalEmpId').value,
+    tipo:         'freelancer_avalia_empregador',
+    nota:         selectedStarsEmp,
+    comentario
+  });
+  if (res.erro) { showToast(res.erro, 'error'); return; }
+  document.getElementById('modalAvaliarEmp').classList.remove('open');
+  showToast('Avaliação enviada com sucesso! ⭐', 'success');
+  pageAvaliar();
+}
+
+/* ── AVALIAÇÕES RECEBIDAS ───────────────────────── */
+async function pageMinhasAvals() {
+  if (!await checkAuth()) return;
+
+  const [avals, todosUsers] = await Promise.all([
+    SITF.getAvaliacoes({ avaliado_id: currentUser.id, tipo: 'empregador_avalia_freelancer' }),
+    SITF.getUsers()
+  ]);
+
+  const avg = avals.length
+    ? (avals.reduce((s,a) => s + parseInt(a.nota), 0) / avals.length).toFixed(1)
+    : '–';
+
+  document.getElementById('pageContent').innerHTML = `
+    <div style="margin-bottom:1.75rem">
+      <h2 style="font-size:1.5rem;font-weight:800">📝 Avaliações Recebidas</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">
+        Média geral: <strong style="color:var(--amber)">${avg} ⭐</strong> ·
+        ${avals.length} avaliação${avals.length!==1?'ões':''}
+      </p>
+    </div>
+    ${avals.length ? `
+      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;display:flex;gap:2rem;align-items:center;flex-wrap:wrap">
+        <div style="text-align:center">
+          <div style="font-size:3rem;font-weight:800;font-family:Syne,sans-serif;line-height:1">${avg}</div>
+          <div style="color:var(--amber);font-size:1.2rem">${starsHTML(parseFloat(avg))}</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.25rem">${avals.length} avaliações</div>
+        </div>
+        <div style="flex:1;min-width:180px">
+          ${[5,4,3,2,1].map(n => {
+            const count = avals.filter(a => parseInt(a.nota) === n).length;
+            const pct   = avals.length ? Math.round(count / avals.length * 100) : 0;
+            return `<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem">
+              <span style="font-size:0.75rem;color:var(--text-muted);width:18px">${n}★</span>
+              <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${pct}%"></div></div>
+              <span style="font-size:0.72rem;color:var(--text-dim);width:28px">${count}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      ${avals.map(a => {
+        const emp = todosUsers.find(u => u.id === a.avaliador_id);
+        return `<div class="card" style="padding:1.25rem;margin-bottom:0.85rem">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem">
+            ${emp ? avatarHTML(emp.nome,'sm') : ''}
+            <div>
+              <div style="font-weight:600;font-size:0.875rem">${emp ? emp.nome : 'Empregador'}</div>
+              <div style="font-size:0.72rem;color:var(--text-dim)">${timeAgo(a.criado_em)}</div>
+            </div>
+            <div style="margin-left:auto;color:var(--amber)">${starsHTML(parseInt(a.nota))}</div>
+          </div>
+          <p style="font-size:0.875rem;color:var(--text-muted);font-style:italic">"${a.comentario}"</p>
+        </div>`;
+      }).join('')}` : `
+      <div class="empty-state">
+        <div class="empty-state-icon">📝</div>
+        <h3>Nenhuma avaliação ainda</h3>
+        <p>Os empregadores poderão avaliar você após os serviços concluídos.</p>
+      </div>`}`;
+}
+
+/* ── INIT ───────────────────────────────────────── */
+checkAuth();
+showPage('dashboard');
+if (window.location.hash === '#chat') showPage('chat');
+if (window.location.hash === '#candidaturas') showPage('candidaturas');
+
+
+// Atualiza badge do chat a cada 30s
+setTimeout(() => {
+  if (currentUser) {
+    updateChatBadge();
+    setInterval(updateChatBadge, 30000);
+  }
+}, 2000);
+</script>
+</body></html>
