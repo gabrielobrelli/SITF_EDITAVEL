@@ -130,7 +130,15 @@ function renderPerfil(user) {
   const allUsers = SITF.getUsers();
   const avg = avals.length ? (avals.reduce((s,a)=>s+a.nota,0)/avals.length) : (user.rating || 0);
   const avgStr = avg ? avg.toFixed(1) : '–';
-  const col = avatarColor(user.nome);
+  
+  // Avatar com foto real se disponível
+const ${avatarEl} = user.foto
+  ? `<div class="perfil-avatar" style="overflow:hidden;border:4px solid var(--card);box-shadow:0 0 0 2px rgba(124,58,237,0.4)">
+       <img src="${user.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+     </div>`
+  : `<div class="perfil-avatar" style="background:${avatarColor(user.nome)};border:4px solid var(--card);box-shadow:0 0 0 2px rgba(124,58,237,0.4)">
+       ${initials(user.nome)}
+     </div>`;
 
   document.title = user.nome + ' – SITF';
 
