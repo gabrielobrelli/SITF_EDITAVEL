@@ -63,24 +63,42 @@
   <button class="btn btn-primary btn-full" onclick="openModal('register');toggleDrawer()">Cadastrar-se</button>
 </div>
 <div class="freelas-page">
-  <div class="freelas-hero">
-    <div class="container">
-      <h1 style="font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;margin-bottom:0.4rem">👥 Freelancers</h1>
-      <p style="color:var(--text-muted);font-size:0.9rem">Encontre o profissional ideal para o seu projeto</p>
-      <div style="margin-top:1.25rem">
-        <div class="search-bar">
-          <input type="text" id="searchInput" placeholder="Buscar por nome, habilidade ou área...">
-          <div class="divider-v"></div>
-          <select id="searchCat" style="background:transparent;border:none;min-width:130px;padding:0.5rem 1rem;color:var(--text-muted);font-family:inherit;font-size:0.85rem;outline:none">
-            <option value="">Todas as áreas</option>
-            <option>Design</option><option>Desenvolvimento</option><option>Marketing</option>
-            <option>Redação</option><option>Fotografia</option><option>Vídeo</option><option>Consultoria</option>
-          </select>
-          <button class="btn btn-primary" onclick="applyFilters()">Buscar</button>
-        </div>
+<div class="freelas-hero">
+  <div class="container">
+    <h1 style="font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;margin-bottom:0.4rem">
+      Profissionais Disponíveis
+    </h1>
+    <p style="color:var(--text-muted);font-size:0.9rem">
+      Encontre o profissional ideal — de garçom a designer, de motorista a desenvolvedor
+    </p>
+    <div style="margin-top:1.25rem">
+      <div class="search-bar">
+        <input type="text" id="searchInput"
+          placeholder="Buscar por nome, habilidade ou área...">
+        <div class="divider-v"></div>
+        <select id="sortSelect"
+          style="background:transparent;border:none;outline:none;padding:0.5rem 1rem;color:var(--text-muted);font-family:inherit;font-size:0.85rem"
+          onchange="applyFilters()">
+          <option value="rating">Melhor avaliados</option>
+          <option value="rate_asc">Menor valor</option>
+          <option value="rate_desc">Maior valor</option>
+          <option value="projetos">Mais projetos</option>
+        </select>
+        <button class="btn btn-primary" onclick="applyFilters()">Buscar</button>
+      </div>
+      <div class="filter-tags" style="margin-top:0.65rem">
+        <button class="filter-tag" onclick="quickFilterFreela('Garçom')">Garçom</button>
+        <button class="filter-tag" onclick="quickFilterFreela('Manobrista')">Manobrista</button>
+        <button class="filter-tag" onclick="quickFilterFreela('Limpeza')">Limpeza</button>
+        <button class="filter-tag" onclick="quickFilterFreela('Segurança')">Segurança</button>
+        <button class="filter-tag" onclick="quickFilterFreela('Motorista')">Motorista</button>
+        <button class="filter-tag" onclick="quickFilterFreela('Cozinheiro')">Cozinheiro</button>
+        <button class="filter-tag" onclick="quickFilterFreela('Design')">Design</button>
+        <button class="filter-tag" onclick="quickFilterFreela('Desenvolvimento')">Dev</button>
       </div>
     </div>
   </div>
+</div>
 
   <div class="freelas-layout">
     <aside class="freelas-sidebar">
@@ -289,5 +307,14 @@ function chatWith(id, nome) {
 }
 
 applyFilters();
+
+
+  function quickFilterFreela(term) {
+  document.getElementById('searchCat').value = term;
+  document.querySelectorAll('.filter-tag').forEach(t => {
+    t.classList.toggle('active', t.textContent.trim() === term);
+  });
+  applyFilters();
+}
 </script>
 </body></html>
